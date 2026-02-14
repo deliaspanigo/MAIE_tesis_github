@@ -1,0 +1,68 @@
+enhancements:
+  lstf_kelvin_color01:
+    standard_name: lstf_kelvin_color01
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - colors:
+                # Orden inverso (de frío/alto a cálido/bajo)
+                # 1. Violeta
+                - [148, 0, 211]
+                # 2. Royal Blue
+                - [65, 105, 225]
+                # 3. Cyan
+                - [0, 255, 255]
+                # 4. Forest Green
+                - [34, 139, 34]
+                # 5. Amarillo
+                - [255, 255, 0]
+                # 6. Dark Orange
+                - [255, 140, 0]
+                # 7. Red
+                - [255, 0, 0]
+                # 8. Maroon
+                - [128, 0, 0]
+              
+              # 🌟 CLAVE: Indica que los valores RGB anteriores están en el rango 0-255
+              color_scale: 255
+              
+              # Rango de Temperaturas de Brillo (Kelvin)
+              # 🌟 VALORES ACTUALIZADOS: -60°C a +60°C 🌟
+              min_value: 213.15
+              max_value: 333.15
+           
+  lstf_celsius_color01:
+    standard_name: lstf_celsius_color01
+    operations:
+      - name: colorize
+        method: !!python/name:satpy.enhancements.colormap.colorize
+        kwargs:
+          palettes:
+            - colors:
+                # Orden inverso (de frío/alto a cálido/bajo)
+                # 1. Violeta
+                - [148, 0, 211]
+                # 2. Royal Blue
+                - [65, 105, 225]
+                # 3. Cyan
+                - [0, 255, 255]
+                # 4. Forest Green
+                - [34, 139, 34]
+                # 5. Amarillo
+                - [255, 255, 0]
+                # 6. Dark Orange
+                - [255, 140, 0]
+                # 7. Red
+                - [255, 0, 0]
+                # 8. Maroon
+                - [128, 0, 0]
+              
+              # 🌟 CLAVE: Indica que los valores RGB anteriores están en el rango 0-255
+              color_scale: 255
+              
+              # Rango de Temperaturas de Brillo (Kelvin)
+              # 🌟 VALORES ACTUALIZADOS: -60°C a +60°C 🌟
+              min_value: -60.0
+              max_value: 60.0

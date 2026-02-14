@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Datos pesados (NO subir NetCDF ni procesados)
+data/raw/*
+data/processed_01_original/*
+data/cache_resampling/*
+!data/raw/.gitkeep          # Para mantener la carpeta vacía en git
+!data/processed_01_original/.gitkeep
+data/cache_resampling/.gitkeep
+
+# Logs y temporales
+logs/
+*.log
+
+# Editor
+.vscode/
+.idea/

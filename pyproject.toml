@@ -1,0 +1,55 @@
+[project]
+name = "goes-processor"
+version = "0.1.0"
+description = "Procesador de imágenes del satélite GOES-19 usando Satpy"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+    {name = "Tu Nombre", email = "tu.email@ejemplo.com"},
+]
+keywords = ["goes","goes-19", "satpy", "satelite", "procesamiento-imagenes", "meteorologia"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+
+dependencies = [
+    "boto3",                        # Descarga desde AWS
+    "click",                        # CLI
+    "pyyaml",                       # Configuración
+    "tqdm",                         # Barra de progreso
+    "fsspec",                       # Sistema de archivos S3
+    "s3fs>=2024.12.0",                         # S3 filesystem
+    "apscheduler",                  # Scheduler automático
+    # NO pongas aquí satpy, rasterio, geopandas, cartopy, matplotlib, numpy
+    # Esas se instalan con conda o manualmente
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "black",
+    "pytest",
+    "pytest-cov",
+]
+
+[project.scripts]
+goes-processor = "goes_processor.main:cli"
+
+[build-system]
+requires = ["hatchling>=1.26.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/goes_processor"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+select = ["E", "F", "W", "I", "PL", "UP", "B", "C4"]
+ignore = ["E501"]
