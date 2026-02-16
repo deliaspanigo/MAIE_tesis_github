@@ -1,9 +1,9 @@
-# src/goes19_processor/main.py
+# src/goes_processor/main.py
 
 import click
 
 # Importa y aplica la configuración global de Satpy (se ejecuta automáticamente)
-from .config_satpy import *  # Esto ejecuta todo el código de config_satpy.py
+from .my_config_satpy import *  # Esto ejecuta todo el código de config_satpy.py
 
 # Importa el grupo principal (definido aquí)
 @click.group()

@@ -1,15 +1,38 @@
 composites:
-  lstf_kelvin_color01:
+  # --- PRODUCTOS DE TEMPERATURA (LST) -------------------------------------------------------------------
+  lst_kelvin_color01:
     compositor: !!python/name:satpy.composites.core.SingleBandCompositor
     prerequisites:
       - name: LST
-        # 🌟 ESTO DEBE ESTAR: Los valores de color (193K-303K) lo requieren.
+        # Requerido para procesar valores térmicos (193K-303K)
         calibration: brightness_temperature 
-    standard_name: "lstf_kelvin_color01"
-  lstf_celsius_color01:
+    standard_name: "lst_kelvin_color01"
+  # --- PRODUCTOS DE TEMPERATURA (LST) ---
+  lst_celsius_color01:
     compositor: !!python/name:satpy.composites.core.SingleBandCompositor
     prerequisites:
       - name: LST
-        # 🌟 ESTO DEBE ESTAR: Los valores de color (193K-303K) lo requieren.
+        # Requerido para procesar valores térmicos
         calibration: brightness_temperature 
     standard_name: "lstf_celsius_color01"
+# --- PRODUCTO DE FUEGO (FDCF) ---------------------------------------------------------------------------
+  my_fdc_fn01:
+    compositor: !!python/name:satpy.composites.core.GenericCompositor
+    prerequisites:
+      - name: Mask
+    modifiers: []
+    standard_name: "my_fdc_fn01" # <--- Unificado
+    # --- PRODUCTO DE FUEGO (FDCF) ---------------------------------------------------------------------------
+  my_fdc_fn02:
+    compositor: !!python/name:satpy.composites.core.GenericCompositor
+    prerequisites:
+      - name: Mask
+    modifiers: []
+    standard_name: "my_fdc_fn02" # <--- Unificado
+    # --- PRODUCTO DE FUEGO (FDCF) ---------------------------------------------------------------------------
+  my_fdc_fn03:
+    compositor: !!python/name:satpy.composites.core.GenericCompositor
+    prerequisites:
+      - name: Mask
+    modifiers: []
+    standard_name: "my_fdc_fn03" # <--- Unificado

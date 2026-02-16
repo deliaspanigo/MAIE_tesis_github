@@ -10,7 +10,7 @@ def download():
 
 @download.command(name="goes-files")
 @click.option('--satellite', default="19", type=click.Choice(["16", "17", "18", "19"]), help='Satélite GOES (16, 17, 18, 19).')
-@click.option('--product', required=True, help='Nombre del producto (ej: ABI-L2-LSTF, ABI-L2-MCMIPF).')
+@click.option('--product', required=True, help='Nombre del producto (ej: ABI-L2-LSTF, ABI-L2-MCMIPF, ABI-L2-FDCF).')
 @click.option('--year', required=True, help='Año (YYYY).')
 @click.option('--day', required=True, help='Día del año (DDD).')
 @click.option('--hour', default="all", help='Hora (HH) o "all".')

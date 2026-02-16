@@ -1,121 +1,129 @@
-# src/goes19_processor/processing/truecolor.py
+# src/goes19_processor/processing/logic_how/truecolor.py
 
-from pathlib import Path
-from satpy import Scene
-from pyresample.geometry import AreaDefinition  # Import necesario para AreaDefinition
-import warnings
+import sys
 import json
+import warnings
+import time
+import os
+from pathlib import Path
 from datetime import datetime
+from satpy import Scene, config as satpy_config
+from pyresample.geometry import AreaDefinition
 
 warnings.filterwarnings("ignore")
 
-def process_file(input_file, input_base: Path, output_base: Path, format: str = "both", overwrite: bool = False):
-    # --- 0. NORMALIZACIÓN DE ENTRADA ---
-    if isinstance(input_file, list):
-        input_file = input_file[0]
-       
-    input_file = Path(input_file).resolve()
-    input_base = Path(input_base).resolve()
-    output_base = Path(output_base).resolve()
-   
-    # 1. ESTRUCTURA DE CARPETAS
-    try:
-        rel_path = input_file.relative_to(input_base)
-        final_output_dir = output_base / rel_path.parent / input_file.stem
-    except ValueError:
-        final_output_dir = output_base / "external" / input_file.stem
-    final_output_dir.mkdir(parents=True, exist_ok=True)
-    base_name = input_file.stem
+class SmartIndentedOutput:
+    """
+    Universal output capturer with double indentation for external messages.
+    """
+    def __init__(self, original_stream, base_indent):
+        self.original_stream = original_stream
+        self.base_indent = base_indent
+        self.extra_indent = "    "  # 4 extra spaces for sub-messages
+        self.newline = True
 
-    # Definición de rutas del Pack
-    png_original = final_output_dir / f"{base_name}_original_goes.png"
-    tif_wgs84 = final_output_dir / f"{base_name}_wgs84.tif"
-    png_wgs84 = final_output_dir / f"{base_name}_wgs84.png"
-    json_meta = final_output_dir / f"{base_name}_metadata.json"
+    def write(self, text):
+        for line in text.splitlines(keepends=True):
+            if self.newline and line.strip():
+                # Si la línea NO empieza con uno de tus íconos, le ponemos tabulación extra
+                # Esto identifica mensajes externos como "No sensor name..."
+                if not any(icon in line for icon in ["⏰", "📁", "📂", "🧠", "📦", "📸", "🗺️", "🔄", "💾", "✅", "🏁", "⏱️", "❌"]):
+                    self.original_stream.write(self.base_indent + self.extra_indent + line)
+                else:
+                    self.original_stream.write(self.base_indent + line)
+            else:
+                self.original_stream.write(line)
+            self.newline = line.endswith('\n')
 
+    def flush(self):
+        self.original_stream.flush()
+
+def process_file(input_file, input_base: Path, output_base: Path, format="both", overwrite=False, indent=""):
+    """
+    True Color Processor with Smart Sub-indentation for external library logs.
+    v.0.0.1 - Monolithic Robust English Version
+    """
+    start_time = datetime.now()
+    start_ts = time.time()
+    
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    
+    # Use the SmartIndentedOutput to handle the sub-indentation
+    sys.stdout = SmartIndentedOutput(original_stdout, indent)
+    sys.stderr = SmartIndentedOutput(original_stderr, indent)
+    
     try:
-        # 2. CARGAR ESCENA
-        scn = Scene(filenames=[str(input_file)], reader='abi_l2_nc')
+        if isinstance(input_file, list): input_file = input_file[0]
+        file_path = Path(input_file).resolve()
+        base_name = file_path.stem
+        
+        path_cache = satpy_config.get("cache_dir")
+        os.environ['PYRESAMPLE_CACHE_DIR'] = path_cache
+
+        rel_path = file_path.relative_to(input_base)
+        out_dir = output_base / rel_path.parent / base_name
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        print(f"⏰ Start time: {start_time.strftime('%H:%M:%S')}")
+        print(f"📁 Source: {file_path.name}")
+        print(f"📂 Output: {out_dir}")
+        print(f"🧠 Cache: {path_cache}")
+
+        # --- STEP 1 ---
+        print(f"📦 [1/5] Loading Scene (abi_l2_nc)...")
+        scn = Scene(filenames=[str(file_path)], reader='abi_l2_nc')
         scn.load(['true_color'])
 
-        # --- A. PNG ORIGINAL (Perspectiva Satelital) ---
-        # Guardar con fill_value=None para transparencia fuera del disco
-        scn.save_datasets(
-            writer='simple_image',
-            datasets=['true_color'],
-            base_dir=str(final_output_dir),
-            filename=f"{base_name}_original_goes.png",
-            fill_value=None,          # Fuera del disco → transparente
-            compress=True             # Reduce tamaño
-        )
-        print(f"PNG Nativo guardado: {png_original}")
+        # --- STEP 2 ---
+        print(f"📸 [2/5] Generating native plot...")
+        orig_img = out_dir / f"{base_name}_original_goes.png"
+        scn.save_datasets(writer='simple_image', datasets=['true_color'], 
+                          base_dir=str(out_dir), filename=orig_img.name)
+        if orig_img.exists():
+            print(f"   ✅ Confirmed: {orig_img.name}")
 
-        # --- B. ENMASCARAMIENTO DE DISCO ---
-        # Aplicamos máscara basada en validez (datos reales dentro del disco)
-        true_color_masked = scn["true_color"].where(scn["true_color"].notnull())
-        scn["true_color_masked"] = true_color_masked
-
-        # 3. DEFINICIÓN DE ÁREA WGS84 (3600 x 1800)
-        area_id = 'global_wgs84'
-        description = 'Lat-Lon Global Plate Carree'
-        proj_id = 'wgs84'
-        projection = {'proj': 'eqc', 'lat_ts': 0, 'lat_0': 0, 'lon_0': 0, 'x_0': 0, 'y_0': 0, 'ellps': 'WGS84', 'units': 'm'}
-        width = 3600
-        height = 1800
-        area_extent = (-20037508.34, -10018754.17, 20037508.34, 10018754.17)
-        area_def = AreaDefinition(area_id, description, proj_id, projection, width, height, area_extent)
-
-        # 4. REMUESTREO (Transformación a WGS84)
-        print(f"Remuestreando a WGS84 ({width}x{height})...")
-        scn_wgs84 = scn.resample(area_def, resampler='bilinear')
-
-        # --- C. GUARDADO EN WGS84 con transparencia ---
-        # PNG WGS84 con fill_value=None (transparente fuera del disco)
-        scn_wgs84.save_datasets(
-            writer='simple_image',
-            datasets=['true_color'],
-            base_dir=str(final_output_dir),
-            filename=f"{base_name}_wgs84.png",
-            fill_value=None,          # Transparente fuera del disco
-            compress=True
+        # --- STEP 3 ---
+        print(f"🗺️  [3/5] Defining WGS84 grid...")
+        area_def = AreaDefinition(
+            'global_wgs84', 'Lat-Lon Global', 'wgs84', 
+            {'proj': 'eqc', 'lat_ts': 0, 'lat_0': 0, 'lon_0': 0, 'x_0': 0, 'y_0': 0, 'ellps': 'WGS84', 'units': 'm'}, 
+            3600, 1800, 
+            (-20037508.34, -10018754.17, 20037508.34, 10018754.17)
         )
 
-        # TIFF WGS84 con canal alpha (transparencia real en QGIS)
-        scn_wgs84.save_datasets(
-            writer='geotiff',
-            datasets=['true_color'],
-            base_dir=str(final_output_dir),
-            filename=f"{base_name}_wgs84.tif",
-            include_alpha=True,       # Canal alfa para transparencia
-            fill_value=0              # Valor de relleno para no-datos
-        )
+        # --- STEP 4 ---
+        print(f"🔄 [4/5] Resampling (kd_tree)...")
+        scn_res = scn.resample(area_def, resampler='kd_tree', cache_dir=path_cache)
 
-        # --- D. METADATOS JSON ---
-        metadata = {
-            "archivo_fuente": input_file.name,
-            "procesado_el": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "satelite": scn.attrs.get('satellite_name', 'GOES-19'),
-            "producto": "MCMIPF - True Color",
-            "resolucion_wgs84": "3600x1800 (0.1 deg)",
-            "mascara": "Full Disk Masking (Space exclusion applied via fill_value and alpha)",
-            "outputs": {
-                "png_goes": png_original.name,
-                "tif_wgs84": tif_wgs84.name,
-                "png_wgs84": png_wgs84.name,
-                "json": json_meta.name
-            }
-        }
-        with open(json_meta, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, indent=4, ensure_ascii=False)
+        # --- STEP 5 ---
+        print(f"💾 [5/5] Exporting final products...")
+        if format in ["png", "both"]:
+            out_png = out_dir / f"{base_name}_wgs84.png"
+            scn_res.save_datasets(writer='simple_image', datasets=['true_color'], 
+                                  base_dir=str(out_dir), filename=out_png.name)
+            if out_png.exists(): print(f"   ✅ Confirmed: {out_png.name}")
 
-        print("-" * 30)
-        print("¡Proceso Exitoso!")
-        print(f"1. Nativo: {png_original.name}")
-        print(f"2. WGS84 PNG: {png_wgs84.name}")
-        print(f"3. WGS84 TIF: {tif_wgs84.name} (Listo para QGIS con transparencia)")
-        print(f"4. Metadatos: {json_meta.name}")
+        if format in ["tif", "both"]:
+            out_tif = out_dir / f"{base_name}_wgs84.tif"
+            scn_res.save_datasets(writer='geotiff', datasets=['true_color'], 
+                                  base_dir=str(out_dir), filename=out_tif.name, include_alpha=True)
+            if out_tif.exists(): print(f"   ✅ Confirmed: {out_tif.name}")
 
-        return final_output_dir
+        # --- FINAL REPORT ---
+        end_time = datetime.now()
+        duration_mins = (time.time() - start_ts) / 60
+        
+        print(f"🏁 End time: {end_time.strftime('%H:%M:%S')}")
+        print(f"⏱️  Duration: {duration_mins:.2f} minutes")
+        print("-" * 50)
+        
+        return out_dir
 
     except Exception as e:
-        raise RuntimeError(f"Error en True Color v.0.0.1: {str(e)}")
+        print(f"❌ CRITICAL ERROR: {str(e)}")
+        raise e
+        
+    finally:
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr

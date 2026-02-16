@@ -1,103 +1,140 @@
+# src/goes_processor/processing/logic_how/lst.py
+
 import sys
 import json
 import warnings
 import numpy as np
+import time
+import os
 from pathlib import Path
 from datetime import datetime
-from satpy import Scene
+from satpy import Scene, config as satpy_config
 from pyresample.geometry import AreaDefinition
-
-# 1. INTEGRACIÓN CON CONFIGURACIÓN GLOBAL
-try:
-    from .. import config_satpy
-except ImportError:
-    sys.path.append(str(Path(__file__).resolve().parents[2]))
-    from goes_processor import config_satpy
 
 warnings.filterwarnings("ignore")
 
-def process_file(input_file, input_base: Path, output_base: Path, format: str = "both", overwrite: bool = False):
-    input_file = Path(input_file).resolve()
-    input_base = Path(input_base).resolve()
-    output_base = Path(output_base).resolve()
-    
-    # Estructura de salida espejo
-    rel_path = input_file.relative_to(input_base)
-    final_output_dir = output_base / rel_path.parent / input_file.stem
-    final_output_dir.mkdir(parents=True, exist_ok=True)
-    
-    base_name = input_file.stem
-    
-    # Definición de las 6 salidas
-    png_orig_gray   = final_output_dir / f"{base_name}_original_native_gray.png"
-    png_orig_color  = final_output_dir / f"{base_name}_original_native_color.png" # 🌟 Restaurado
-    tif_wgs84_gray  = final_output_dir / f"{base_name}_wgs84_gray_data_celsius.tif"
-    png_wgs84_gray  = final_output_dir / f"{base_name}_wgs84_gray_preview.png"
-    tif_wgs84_color = final_output_dir / f"{base_name}_wgs84_color_enhanced_celsius.tif"
-    png_wgs84_color = final_output_dir / f"{base_name}_wgs84_color_preview.png"
-    json_meta       = final_output_dir / f"{base_name}_metadata.json"
+class SmartIndentedOutput:
+    """
+    Universal output capturer with double indentation for external messages.
+    Ensures any library warning or error is further indented to the right.
+    """
+    def __init__(self, original_stream, base_indent):
+        self.original_stream = original_stream
+        self.base_indent = base_indent
+        self.extra_indent = "    "  # 4 extra spaces for sub-messages
+        self.newline = True
 
+    def write(self, text):
+        for line in text.splitlines(keepends=True):
+            if self.newline and line.strip():
+                # Check for our specific logging icons to apply base or extra indentation
+                if not any(icon in line for icon in ["⏰", "📁", "📂", "🧠", "📦", "📸", "🗺️", "🔄", "💾", "✅", "🏁", "⏱️", "❌"]):
+                    self.original_stream.write(self.base_indent + self.extra_indent + line)
+                else:
+                    self.original_stream.write(self.base_indent + line)
+            else:
+                self.original_stream.write(line)
+            self.newline = line.endswith('\n')
+
+    def flush(self):
+        self.original_stream.flush()
+
+def process_file(input_file, input_base: Path, output_base: Path, format="both", overwrite=False, indent=""):
+    """
+    LST Processor with Smart Sub-indentation and Thesis Timing.
+    v.0.0.1 - Robust Monolithic English Version
+    """
+    # 0. TIMER AND REDIRECTION SETUP
+    start_time = datetime.now()
+    start_ts = time.time()
+    
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+    
+    # Redirect both streams to capture any external library output
+    sys.stdout = SmartIndentedOutput(original_stdout, indent)
+    sys.stderr = SmartIndentedOutput(original_stderr, indent)
+    
     try:
-        # 2. CARGAR ESCENA
-        scn = Scene(filenames=[str(input_file)], reader='abi_l2_nc')
-        prod_gray = 'LST'
-        prod_color = 'lstf_celsius_color01'
+        # 1. PATH NORMALIZATION AND SETUP
+        if isinstance(input_file, list): 
+            input_file = input_file[0]
+            
+        file_path = Path(input_file).resolve()
+        base_name = file_path.stem
         
-        print(f"  - Cargando datasets...")
+        path_cache = satpy_config.get("cache_dir")
+        os.environ['PYRESAMPLE_CACHE_DIR'] = path_cache
+
+        rel_path = file_path.relative_to(input_base)
+        out_dir = output_base / rel_path.parent / base_name
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        # INITIAL LOGGING
+        print(f"⏰ Start time: {start_time.strftime('%H:%M:%S')}")
+        print(f"📁 Source: {file_path.name}")
+        print(f"📂 Output: {out_dir}")
+
+        # 2. LOAD LST DATA
+        print(f"📦 [1/5] Loading LST products...")
+        scn = Scene(filenames=[str(file_path)], reader='abi_l2_nc')
+        prod_gray, prod_color = 'LST', 'lst_celsius_color01'
         scn.load([prod_gray, prod_color])
 
-        # --- 🌟 FIX MANUAL KELVIN A CELSIUS (v.0.0.1) 🌟 ---
+        # 3. UNIT CONVERSION (Fix Celsius)
+        # Only apply if the mean temperature suggests Kelvin values (> 100)
         for p in [prod_gray, prod_color]:
-            # Verificamos si los datos están en Kelvin (Media > 100)
             if scn[p].mean() > 100:
-                print(f"    - [FIX] Restando 273.15 a {p} para obtener Celsius")
                 scn[p] = scn[p] - 273.15
                 scn[p].attrs['units'] = 'Celsius'
+
+        # 4. SAVE NATIVE PLOTS
+        print(f"📸 [2/5] Generating native plots...")
+        native_png = out_dir / f"{base_name}_native_gray.png"
+        scn.save_dataset(prod_gray, filename=str(native_png), writer='simple_image')
+        if native_png.exists():
+            print(f"   ✅ Confirmed: {native_png.name}")
+
+        # 5. RESAMPLING
+        print(f"🔄 [4/5] Resampling to WGS84 (kd_tree)...")
+        area_def = AreaDefinition('wgs84', 'Global', 'epsg4326', 'EPSG:4326', 3600, 1800, [-180, -90, 180, 90])
+        scn_res = scn.resample(area_def, resampler='kd_tree', cache_dir=path_cache)
+
+        # 6. EXPORT GeoTIFFs
+        print(f"💾 [5/5] Exporting GeoTIFF products...")
+        tif_path = out_dir / f"{base_name}_wgs84_data.tif"
+        scn_res.save_dataset(prod_gray, filename=str(tif_path), writer='geotiff')
+        if tif_path.exists():
+            print(f"   ✅ Confirmed: {tif_path.name}")
+
+        # 7. FINAL TIME REPORTING
+        end_time = datetime.now()
+        duration_mins = (time.time() - start_ts) / 60
         
-        # Verificación rápida para el log
-        check_val = scn[prod_gray].values
-        clean_val = check_val[~np.isnan(check_val)]
-        print(f"    [CHECK] Rango real: {clean_val.min():.2f} a {clean_val.max():.2f} °C")
-        # --------------------------------------------------
-
-        # 3. GUARDAR PRODUCTOS ORIGINALES (NATIVOS)
-        print(f"  - Guardando PNGs originales (Nativo)...")
-        scn.save_dataset(prod_gray, filename=str(png_orig_gray), writer='simple_image')
-        scn.save_dataset(prod_color, filename=str(png_orig_color), writer='simple_image')
-
-        # 4. REMUESTREO WGS84 (3600x1800)
-        area_def = AreaDefinition(
-            'global_wgs84', 'Global WGS84', 'epsg4326', 'EPSG:4326',
-            3600, 1800, [-180.0, -90.0, 180.0, 90.0]
-        )
-        print(f"  - Remuestreando a WGS84...")
-        scn_res = scn.resample(area_def)
-
-        # 5. GUARDAR PRODUCTOS WGS84
-        print(f"  - Guardando archivos WGS84...")
-        # Grises (Datos científicos)
-        scn_res.save_dataset(prod_gray, filename=str(tif_wgs84_gray), writer='geotiff', dtype=np.float32)
-        scn_res.save_dataset(prod_gray, filename=str(png_wgs84_gray), writer='simple_image')
-        # Colores (Visualización)
-        scn_res.save_dataset(prod_color, filename=str(tif_wgs84_color), writer='geotiff')
-        scn_res.save_dataset(prod_color, filename=str(png_wgs84_color), writer='simple_image')
-
-        # 6. METADATOS
-        metadata = {
-            "source": input_file.name,
-            "units": "Celsius",
-            "fixed_kelvin_to_celsius": True,
-            "files": {
-                "native_color": png_orig_color.name,
-                "wgs84_data": tif_wgs84_gray.name,
-                "wgs84_color": tif_wgs84_color.name
+        print(f"🏁 End time: {end_time.strftime('%H:%M:%S')}")
+        print(f"⏱️  Duration: {duration_mins:.2f} minutes")
+        print("-" * 50)
+        
+        # Save JSON metadata for scientific record
+        meta = {
+            "source_file": file_path.name,
+            "product": "LST",
+            "processing_stats": {
+                "start": start_time.strftime('%Y-%m-%d %H:%M:%S'),
+                "end": end_time.strftime('%Y-%m-%d %H:%M:%S'),
+                "duration_min": round(duration_mins, 2)
             }
         }
-        with open(json_meta, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, indent=4)
+        with open(out_dir / f"{base_name}_metadata.json", 'w') as f:
+            json.dump(meta, f, indent=4)
 
-        return final_output_dir
+        return out_dir
 
     except Exception as e:
-        print(f"  - [ERROR] {base_name}: {str(e)}")
+        print(f"❌ CRITICAL ERROR: {str(e)}")
         raise e
+        
+    finally:
+        # RESTORE CONSOLE STREAMS
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
