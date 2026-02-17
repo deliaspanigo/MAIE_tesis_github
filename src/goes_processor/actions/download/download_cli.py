@@ -1,5 +1,4 @@
 import click
-# Import logic from the new core directory
 from .core.download_goes_files import download_goes_files
 
 @click.group(name="download")
@@ -8,71 +7,42 @@ def download():
     pass
 
 @download.command(name="goes-files")
-@click.option('--satellite', 
-              default="19", 
-              type=click.Choice(["16", "17", "18", "19"]), 
-              help='GOES Satellite number (16, 17, 18, 19).')
-@click.option('--product', 
-              required=True, 
-              help='Product name (e.g., ABI-L2-LSTF, GLM-L2-LCFA).')
-@click.option('--year', 
-              required=True, 
-              help='Year in YYYY format.')
-@click.option('--day', 
-              required=True, 
-              help='Day of the year in DDD format.')
-@click.option('--hour', 
-              default="all", 
-              help='Hour (HH) or "all".')
-@click.option('--minute', 
-              default="all", 
-              help='Minute (MM) or "all".')
-@click.option('--output-dir', 
-              default="data/raw", 
-              help='Target root directory for downloads.')
-@click.option('--overwrite', 
-              type=click.Choice(['yes', 'no']), 
-              default='no', 
-              help='Force download even if file exists (yes/no).')
-              
-              
-def download_files_cli(satellite, product, year, day, hour, minute, overwrite, output_dir):
-    """
-    Download NetCDF files from NOAA S3 with weight validation.
-    Maintains structure: output_dir/noaa-goesX/product/year/day/hour/
-    """
+@click.option('--satellite', required=True, type=click.Choice(["16", "17", "18", "19"]))
+@click.option('--product', required=True)
+@click.option('--year', required=True)
+@click.option('--day', required=True)
+@click.option('--hour', required=True)
+@click.option('--minute', required=True)
+@click.option('--output-dir', required=True)
+@click.option('--overwrite', type=click.Choice(['yes', 'no']), required=True)
+def download_files_cli(satellite, product, year, day, hour, minute, output_dir, overwrite):
+    """v.0.3.0 - Strict download with Legion validation."""
     
-    # 1. Validate Hour format
+    # --- PUNTOS DE CONTROL LEGION ---
     if hour != "all":
         try:
             h_int = int(hour)
-            if not (0 <= h_int <= 23):
-                raise ValueError
+            if not (0 <= h_int <= 23): raise ValueError
             hour = str(h_int).zfill(2)
         except ValueError:
-            raise click.BadParameter("Hour must be between 00 and 23.")
+            click.secho(f"\n[LEGION-VALIDATION-ERROR] Invalid Hour: '{hour}'. Must be 00-23 or 'all'.", fg="red", bold=True)
+            return # Detiene la ejecución de forma segura
 
-    # 2. Validate Minute format
     if minute != "all":
         try:
             m_int = int(minute)
-            if not (0 <= m_int <= 59):
-                raise ValueError
+            if not (0 <= m_int <= 59): raise ValueError
             minute = str(m_int).zfill(2)
         except ValueError:
-            raise click.BadParameter("Minute must be between 00 and 59.")
+            click.secho(f"\n[LEGION-VALIDATION-ERROR] Invalid Minute: '{minute}'. Must be 00-59 or 'all'.", fg="red", bold=True)
+            return
 
-    # 3. Format Day of Year (DDD)
     day_padded = day.zfill(3)
-
-    # 4. Convert overwrite string to Boolean for the core function
     should_overwrite = (overwrite == 'yes')
 
     # --- EXECUTION ---
     try:
         click.echo(f"\n[*] Initializing download for {product} (GOES-{satellite})...")
-        
-        # Call the core logic now located in core/download_goes_files.py
         download_goes_files(
             satellite=satellite,
             product=product,
@@ -83,8 +53,6 @@ def download_files_cli(satellite, product, year, day, hour, minute, overwrite, o
             overwrite=should_overwrite,
             output_dir=output_dir
         )
-        
         click.secho("\n✅ Download process finished successfully.", fg="green", bold=True)
-        
     except Exception as e:
-        click.secho(f"\n[!] CRITICAL CLI ERROR: {e}", fg="red", bold=True)
+        click.secho(f"\n[LEGION-SYSTEM-ERROR] {e}", fg="yellow", bold=True)

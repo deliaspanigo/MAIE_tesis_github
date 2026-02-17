@@ -1,0 +1,10 @@
+{
+    "source_file": "OR_ABI-L2-LSTF-M6_G19_s20260030200228_e20260030209536_c20260030215118.nc",
+    "stage": "fn01",
+    "products": [
+        "raw_celsius",
+        "enhanced_color"
+    ],
+    "config_source": "main_py_global_config",
+    "duration_min": 0.08
+}
