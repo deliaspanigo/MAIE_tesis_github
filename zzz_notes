@@ -1,0 +1,9 @@
+3. Otros productos ABI complementarios para Tormentas
+
+Si quieres combinar los rayos con la estructura de las nubes, deberías descargar:
+Producto	Descripción	Utilidad en Tormentas
+ABI-L2-CMIPF	Bandas 02, 08, 13, 14	Ver el tope de la nube (banda 13) y nubes de gran desarrollo vertical.
+ABI-L2-ACTPF	Cloud Top Phase	Identificar si la parte superior de la nube tiene hielo (crucial para rayos).
+ABI-L2-CTH	Cloud Top Height	Medir la altura de la tormenta (cuanto más alta, más peligrosa).
+
+
