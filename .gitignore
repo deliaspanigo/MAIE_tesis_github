@@ -1,0 +1,36 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# --- Heavy Data (Excluding all satellite data and results) ---
+data_raw/
+data_processed/
+satpy_cache/
+notebooks/
+
+# --- File extensions (Block large binary files) ---
+*.tif
+*.nc
+*.png
+*.jpg
+*.jpeg
+
+# Mantener las estructuras de carpetas vacías si lo deseas
+!data_raw/.gitkeep
+!data_processed/.gitkeep
+
+# --- Logs & Temp ---
+logs/
+*.log
+.cache/
+
+# --- Editor ---
+.vscode/
+.idea/
+.DS_Store
