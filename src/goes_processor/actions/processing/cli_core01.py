@@ -1,7 +1,7 @@
 import click
 from pathlib import Path
 import time
-from .core_01_proc_one_file.lst import process_lst_single_file
+from goes_processor.actions.processing.core_01_proc_one_file.lst import process_lst_single_file
 
 # --- 1. HELPER: VALIDATION & SEARCH ---
 def validate_and_prepare(satellite, product, year, day, hour, minute, input_dir):
