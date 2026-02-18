@@ -40,7 +40,8 @@ class SmartIndentedOutput:
     def flush(self):
         self.original_stream.flush()
 
-def process_glm_heatmap_single_file(input_file, input_base: Path, output_base: Path, overwrite=False, indent=""):
+
+def fn01_process_visuals(input_file, input_base: Path, output_base: Path, overwrite=False, indent=""):
     """
     GLM Heatmap Orchestrator v0.3.5
     Includes: Standard Visuals, Scientific GeoTIFF, and Transparent Overlays.
@@ -70,7 +71,7 @@ def process_glm_heatmap_single_file(input_file, input_base: Path, output_base: P
         print(f"📁 Processing File: {base_name}")
 
         if not overwrite and (fn_dir / f"{base_name}_wgs84_transparent.png").exists():
-            print(f"⚠️  Skipping: Folder {base_name} already exists.")
+            print(f"✅  Skipping: Folder {base_name} already exists.")
             report["glm_gen"] = True
             return report
 
@@ -160,6 +161,41 @@ def process_glm_heatmap_single_file(input_file, input_base: Path, output_base: P
 
     except Exception as e:
         print(f"❌ CRITICAL ERROR: {str(e)}")
+        return report
+    finally:
+        sys.stdout, sys.stderr = original_stdout, original_stderr
+        
+        
+
+def process_glm_heatmap_single_file(input_file, input_base: Path, output_base: Path, overwrite=False, indent=""):
+    """FDC Orchestrator v0.4.5"""
+    start_ts = time.time()
+    report = {"fn01": False, 
+              #"fn02": False, 
+              #"fn03": False
+              }
+    
+    original_stdout, original_stderr = sys.stdout, sys.stderr
+    sys.stdout = SmartIndentedOutput(original_stdout, indent)
+    sys.stderr = SmartIndentedOutput(original_stderr, indent)
+    
+    try:
+        file_path = Path(input_file).resolve()
+        base_name = file_path.stem
+        rel_path = file_path.relative_to(input_base.resolve())
+        main_out_dir = output_base / rel_path.parent / base_name
+        
+        
+
+        scn_res = fn01_process_visuals(input_file = input_file, input_base = input_base, output_base=output_base, overwrite=overwrite, indent=indent)
+        report["fn01"] = True
+        
+        
+        print(f"✅ Finished in {round((time.time()-start_ts)/60, 2)} min")
+        return report
+
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
         return report
     finally:
         sys.stdout, sys.stderr = original_stdout, original_stderr

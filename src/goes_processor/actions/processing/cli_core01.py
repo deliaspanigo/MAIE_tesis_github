@@ -1,32 +1,42 @@
+# Version: v.0.3.5 - Core 01 CLI: Strict Julian Day (3 Digits) & Mandatory Overwrite
+
 import click
-from pathlib import Path
+import re
 import time
+from pathlib import Path
 from .core_01_proc_one_file.lst import process_lst_single_file
 from .core_01_proc_one_file.mcmip_truecolor import process_mcmip_true_color_single_file
 from .core_01_proc_one_file.fdc import process_fdc_single_file  
 from .core_01_proc_one_file.glm_heatmap import process_glm_heatmap_single_file
 
-# --- 1. HELPER: VALIDATION & SEARCH ---
+# --- 1. VALIDADOR ESTRICTO DE DÍA JULIANO ---
+def validate_julian_day(ctx, param, value):
+    """Fuerza a que el día sea exactamente de 3 dígitos (001-366)."""
+    if not re.match(r'^\d{3}$', value):
+        raise click.BadParameter('El día debe tener exactamente 3 dígitos (ejemplo: 003 en lugar de 3).')
+    day_int = int(value)
+    if not (1 <= day_int <= 366):
+        raise click.BadParameter('El día debe estar entre 001 y 366.')
+    return value
+
+# --- 2. HELPER: VALIDATION & SEARCH ---
 def validate_and_prepare(satellite, product, year, day, hour, minute, input_dir):
     PRODUCT_MAP = {
         "LST": process_lst_single_file,
         "MCMIP": process_mcmip_true_color_single_file,
         "FDC": process_fdc_single_file,
-        "LCFA": process_glm_heatmap_single_file, # LCFA es el ID de GLM
+        "LCFA": process_glm_heatmap_single_file,
     }
 
-    # 1. Identificar función de procesamiento
     process_func = next((func for key, func in PRODUCT_MAP.items() if key in product.upper()), None)
     if not process_func:
         return None, None, f"❌ Product '{product}' is not supported."
 
-    # 2. Crawler Flexible (Soporta nombres con y sin modo de escaneo -M*)
     input_base = Path(input_dir)
-    # Quitamos el '-M*' fijo para que sea compatible con GLM
+    # Ya no usamos zfill aquí porque el validador garantiza que ya viene con 3 dígitos
     search_path = f"**/OR_{product}*G{satellite}_s{year}{day}*"
     files = sorted(list(input_base.glob(search_path)))
     
-    # 3. Filtrado por tiempo
     if hour.lower() != 'all':
         files = [f for f in files if f.name.split('_s')[1][7:9] == hour.zfill(2)]
     if minute.lower() != 'all':
@@ -38,24 +48,28 @@ def validate_and_prepare(satellite, product, year, day, hour, minute, input_dir)
     return files, process_func, None
 
 
-# --- 2. CLI COMMAND ---
+# --- 3. CLI COMMAND ---
 @click.command(name="one-file")
 @click.option('--satellite', type=str, required=True, help="Satellite number (e.g., 16, 19)")
 @click.option('--product', type=str, required=True, help="Product (e.g., ABI-L2-LSTF)")
 @click.option('--year', type=str, required=True)
-@click.option('--day', type=str, required=True, help="Julian day (DDD)")
+@click.option('--day', type=str, required=True, callback=validate_julian_day, help="Julian day (DDD, e.g. 003)")
 @click.option('--hour', type=str, required=True)
 @click.option('--minute', type=str, required=True)
 @click.option('--input-dir', type=click.Path(exists=True), required=True)
 @click.option('--output-dir', type=click.Path(), required=True)
-@click.option('--overwrite', type=click.BOOL, default=False)
+@click.option('--overwrite', 
+              type=click.Choice(['True', 'False']), 
+              required=True, 
+              help="Force re-processing of existing files?")
 def proc_single_file_cmd(satellite, product, year, day, hour, minute, input_dir, output_dir, overwrite):
     """
-    v.0.0.1 - GOES-R Sequential Processor CLI.
-    Orchestrates multiple processing stages and reports success per stage.
+    v.0.3.5 - GOES-R Sequential Processor CLI.
+    Strictly requires 3-digit Julian Day and mandatory overwrite.
     """
     
-    # STEP A: Validation
+    ovw_bool = True if overwrite == "True" else False
+    
     files, process_func, error_msg = validate_and_prepare(
         satellite, product, year, day, hour, minute, input_dir
     )
@@ -64,7 +78,6 @@ def proc_single_file_cmd(satellite, product, year, day, hour, minute, input_dir,
         click.echo(error_msg)
         return
 
-    # STEP B: Execution Loop
     total_files = len(files)
     padding = len(str(total_files))
     processed_count = 0
@@ -80,27 +93,23 @@ def proc_single_file_cmd(satellite, product, year, day, hour, minute, input_dir,
         click.echo(f"[{idx_str}/{total_files}] Processing: {file_path.name}")
         
         try:
-            # The core function now returns a DICTIONARY of success statuses
             success_report = process_func(
                 input_file=file_path,
                 input_base=input_base,
                 output_base=output_base,
-                overwrite=overwrite,
+                overwrite=ovw_bool,
                 indent="    "
             )
             
-            # Logic: File is "Processed" if ALL stages in the report are True
             if all(success_report.values()):
                 processed_count += 1
             else:
-                # Detail which stage failed for the user
                 failed_stages = [k for k, v in success_report.items() if not v]
                 click.echo(f"    ⚠️  Partial failure in stages: {failed_stages}")
 
         except Exception as e:
             click.echo(f"    ❌ Critical failure in orchestrator: {e}")
 
-    # STEP C: Final Summary
     duration = time.time() - start_ts
     click.echo("\n" + "="*50)
     click.echo(f"✅ Summary: {processed_count}/{total_files} files fully completed.")

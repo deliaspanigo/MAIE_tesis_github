@@ -3,8 +3,8 @@ goes-processor processing one-file \
     --product GLM-L2-LCFA \
     --year 2026 \
     --day 003 \
-    --hour all \
+    --hour 00 \
     --minute all \
-    --input-dir data_raw/goes_raw\
-    --output-dir data_processed \
-    --overwrite True
+    --input-dir data_raw/goes_raw  \
+    --output-dir data_processed/core_01_proc_one_file \
+    --overwrite False

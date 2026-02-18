@@ -73,7 +73,7 @@ def fn01_lst_generate_products(input_file, input_base: Path, output_base: Path, 
 
         # Overwrite protection
         if not overwrite and (fn_dir / f"{base_name}_wgs84_color.png").exists():
-            print(f"⚠️  [fn01] Skipping: Products already exist.")
+            print(f"✅  [fn01] Skipping: Products already exist.")
             return True
 
         # 3. LOAD DATA

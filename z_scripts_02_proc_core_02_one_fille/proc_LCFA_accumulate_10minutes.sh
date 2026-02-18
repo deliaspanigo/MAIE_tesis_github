@@ -1,0 +1,11 @@
+goes-processor processing accumulate \
+     --satellite 19 \
+     --product GLM-L2-LCFA \
+     --year 2026 \
+     --day 003 \
+     --hour 00 \
+     --minute all \
+     --bin 10minutes \
+     --input-dir data_raw/goes_raw \
+     --output-dir data_processed/core_02_proc_accumulate \
+     --overwrite False

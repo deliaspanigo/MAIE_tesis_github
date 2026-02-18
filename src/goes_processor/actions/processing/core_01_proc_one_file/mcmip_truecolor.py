@@ -22,7 +22,7 @@ class SmartIndentedOutput:
     def write(self, text):
         for line in text.splitlines(keepends=True):
             if self.newline and line.strip():
-                if not any(icon in line for icon in ["⏰", "📁", "📂", "🧠", "📦", "📸", "🗺️", "🔄", "💾", "✅", "🏁", "⏱️", "❌"]):
+                if not any(icon in line for icon in ["⏰", "📁", "📂", "🧠", "📦", "📸", "🗺️", "🔄", "💾", "✅", "🏁", "⏱️", "❌", "✅"]):
                     self.original_stream.write(self.base_indent + self.extra_indent + line)
                 else:
                     self.original_stream.write(self.base_indent + line)
@@ -64,7 +64,7 @@ def fn01_mcmip_true_color_generate_products(input_file, input_base: Path, output
         out_json = out_dir / f"{base_name}_metadata.json"
 
         if not overwrite and out_png_native.exists() and out_png_wgs84.exists() and out_tif_wgs84.exists() and out_json.exists():
-            print(f"⚠️  [fn01] Skipping: All products already exist in fn01 folder.")
+            print(f"✅  [fn01] Skipping: All products already exist in fn01 folder.")
             report["mcmip_gen"] = True
             return report
 
@@ -120,7 +120,7 @@ def fn01_mcmip_true_color_generate_products(input_file, input_base: Path, output
             report["mcmip_gen"] = True
 
         duration = (time.time() - start_ts) / 60
-        print(f"🏁 [fn01] Finished in {duration:.2f} min")
+        print(f"✅ [fn01] Finished in {duration:.2f} min")
         
         return report
 
