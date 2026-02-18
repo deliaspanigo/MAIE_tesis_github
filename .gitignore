@@ -13,6 +13,7 @@ data_raw/
 data_processed/
 satpy_cache/
 notebooks/
+notebooks02/
 
 # --- File extensions (Block large binary files) ---
 *.tif

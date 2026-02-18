@@ -4,29 +4,29 @@ import time
 from .core_01_proc_one_file.lst import process_lst_single_file
 from .core_01_proc_one_file.mcmip_truecolor import process_mcmip_true_color_single_file
 from .core_01_proc_one_file.fdc import process_fdc_single_file  
+from .core_01_proc_one_file.glm_heatmap import process_glm_heatmap_single_file
 
 # --- 1. HELPER: VALIDATION & SEARCH ---
 def validate_and_prepare(satellite, product, year, day, hour, minute, input_dir):
-    """
-    Validates user arguments and performs file crawling based on GOES-R standards.
-    """
     PRODUCT_MAP = {
         "LST": process_lst_single_file,
         "MCMIP": process_mcmip_true_color_single_file,
-        "FDC": process_fdc_single_file,  # Add this mapping
+        "FDC": process_fdc_single_file,
+        "LCFA": process_glm_heatmap_single_file, # LCFA es el ID de GLM
     }
 
-    # Resolve processing function
+    # 1. Identificar función de procesamiento
     process_func = next((func for key, func in PRODUCT_MAP.items() if key in product.upper()), None)
     if not process_func:
         return None, None, f"❌ Product '{product}' is not supported."
 
-    # File Crawler with Scan Mode wildcard (M*)
+    # 2. Crawler Flexible (Soporta nombres con y sin modo de escaneo -M*)
     input_base = Path(input_dir)
-    search_path = f"**/OR_{product}-M*G{satellite}_s{year}{day}*"
+    # Quitamos el '-M*' fijo para que sea compatible con GLM
+    search_path = f"**/OR_{product}*G{satellite}_s{year}{day}*"
     files = sorted(list(input_base.glob(search_path)))
     
-    # Time Filtering
+    # 3. Filtrado por tiempo
     if hour.lower() != 'all':
         files = [f for f in files if f.name.split('_s')[1][7:9] == hour.zfill(2)]
     if minute.lower() != 'all':

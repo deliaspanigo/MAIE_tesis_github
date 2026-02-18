@@ -1,9 +1,9 @@
 goes-processor download goes-files \
-  --satellite 18 \
+  --satellite 19 \
   --product GLM-L2-LCFA \
-  --year 2024 \
+  --year 2026 \
   --day 003 \
-  --hour 00 \
-  --minute 00 \
+  --hour all \
+  --minute all \
   --overwrite no \
   --output-dir data_raw/goes_raw 

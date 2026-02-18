@@ -1,11 +1,10 @@
-goes-processor processing bulk \
-    --satellite 18 \
+goes-processor processing one-file \
+    --satellite 19 \
     --product GLM-L2-LCFA \
-    --year 2024 \
+    --year 2026 \
     --day 003 \
-    --hour 00 \
+    --hour all \
     --minute all \
-    --input-dir data_raw/goes_raw \
-    --output-dir data_proc/goes_proc_01_each_file \
-    --format png \
-    --overwrite yes
+    --input-dir data_raw/goes_raw\
+    --output-dir data_processed \
+    --overwrite True
