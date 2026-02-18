@@ -42,7 +42,7 @@ def fn01_process_visuals(file_list, output_base, time_bin, satellite, overwrite=
         
         folder_range = f"{first_ts}_TO_{last_ts}"
         # Estructura corregida para seguir el patrón de "fn01"
-        fn_dir = (output_base / "core02" / sat_folder / "GLM-L2-LCFA" / 
+        fn_dir = (output_base / sat_folder / "GLM-L2-LCFA" / 
                   year / day / time_bin / folder_range / "fn01")
 
         expected_files = [
