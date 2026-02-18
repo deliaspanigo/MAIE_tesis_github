@@ -3,6 +3,7 @@ from pathlib import Path
 import time
 from .core_01_proc_one_file.lst import process_lst_single_file
 from .core_01_proc_one_file.mcmip_truecolor import process_mcmip_true_color_single_file
+from .core_01_proc_one_file.fdc import process_fdc_single_file  
 
 # --- 1. HELPER: VALIDATION & SEARCH ---
 def validate_and_prepare(satellite, product, year, day, hour, minute, input_dir):
@@ -12,6 +13,7 @@ def validate_and_prepare(satellite, product, year, day, hour, minute, input_dir)
     PRODUCT_MAP = {
         "LST": process_lst_single_file,
         "MCMIP": process_mcmip_true_color_single_file,
+        "FDC": process_fdc_single_file,  # Add this mapping
     }
 
     # Resolve processing function

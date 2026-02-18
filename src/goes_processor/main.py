@@ -21,10 +21,10 @@ satpy.config.set(cache_dir=str(CACHE_DIR))
 os.environ['PYRESAMPLE_CACHE_DIR'] = str(CACHE_DIR)
 
 @click.group()
-@click.version_option(version="0.3.1", prog_name="Satellite Processor Tool")
+@click.version_option(version="0.3.4", prog_name="Satellite Processor Tool")
 def cli():
     """
-    SAT-PROC v.0.3.1: Legion Edition - Thesis Audit Version.
+    SAT-PROC v.0.3.4: Legion Edition - Thesis Audit Version.
     """
     pass
 

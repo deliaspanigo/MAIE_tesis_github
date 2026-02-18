@@ -1,5 +1,5 @@
 # src/goes_processor/__init__.py
-__version__ = "0.3.1"
+__version__ = "0.3.4"
 
 try:
     from .actions.download.core.download_goes_files import download_goes_files
@@ -8,6 +8,7 @@ try:
     # IMPORTANTE: Agregamos MCMIP aquí también
     from .actions.processing.core_01_proc_one_file.lst import process_lst_single_file
     from .actions.processing.core_01_proc_one_file.mcmip_truecolor import process_mcmip_true_color_single_file
+    from .actions.processing.core_01_proc_one_file.fdc import process_fdc_single_file
     
     from .utils.logger import setup_legion_logger
 
