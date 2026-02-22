@@ -1,3 +1,7 @@
+# Metadata de la Tesis
+__version__ = "0.3.6"
+__last_update__ = "2026-02-22"
+
 El proyecto se maneja principalmente a través del comando CLI goes19.
 ### 1. Descargar datos
 Descargar una banda específica (ej: banda 02 visible):

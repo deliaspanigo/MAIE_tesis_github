@@ -3,7 +3,7 @@ goes-processor processing accumulate \
      --product ABI-L2-FDCF \
      --year 2026 \
      --day 003 \
-     --hour 00 \
+     --hour all \
      --minute all \
      --bin 01hour \
      --input-dir data_raw/goes_raw \

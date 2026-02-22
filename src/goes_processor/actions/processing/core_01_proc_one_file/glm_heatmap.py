@@ -1,5 +1,5 @@
 # src/goes_processor/actions/processing/core_01_proc_one_file/glm_heatmap.py
-# Version: v.0.3.5 (Full Disk + Transparent Overlays + Standard Paths)
+# Version: v.0.5.2 (GLM Heatmap - Path Refactoring with Hourly Folders & Dict Report)
 
 import sys
 import json
@@ -40,43 +40,77 @@ class SmartIndentedOutput:
     def flush(self):
         self.original_stream.flush()
 
+# --- ORCHESTRATOR ---
 
-def fn01_process_visuals(input_file, input_base: Path, output_base: Path, overwrite=False, indent=""):
+def process_glm_heatmap_single_file(input_file, input_base: Path, output_base: Path, overwrite=False, indent=""):
     """
-    GLM Heatmap Orchestrator v0.3.5
-    Includes: Standard Visuals, Scientific GeoTIFF, and Transparent Overlays.
+    Main Orchestrator for GLM Heatmap.
+    Structure: output / satellite / product / year / day / hour / time_lapse / filename
     """
     start_ts = time.time()
-    report = {"glm_gen": False}
+    file_path = Path(input_file).resolve()
+    base_name = file_path.stem
+    
+    # 1. CENTRALIZED PATH LOGIC (GOES-R Parsing)
+    parts = base_name.split('_')
+    sat_name = f"noaa-goes{parts[2].replace('G', '')}"
+    product_clean = parts[1] # GLM-L2-LCFA
+
+    # Time parsing from part 3: sYYYYJJJHHMMSS
+    time_str = parts[3]
+    year = time_str[1:5]
+    day  = time_str[5:8]
+    hour = time_str[8:10]
+
+    # Pre-calculated root directory (using 10min for GLM frequency consistency)
+    product_out_root = output_base / sat_name / product_clean / year / day / hour / "time_lapse_20seconds" / base_name
+    
+    # INITIALIZE REPORT FOR CLI COMPATIBILITY
+    success_report = {"stage_01": False}
     
     original_stdout, original_stderr = sys.stdout, sys.stderr
     sys.stdout = SmartIndentedOutput(original_stdout, indent)
     sys.stderr = SmartIndentedOutput(original_stderr, indent)
     
     try:
-        if isinstance(input_file, list): input_file = input_file[0]
-        file_path = Path(input_file).resolve()
-        base_name = file_path.stem
+        print(f"⏰ [glm] Start: {datetime.now().strftime('%H:%M:%S')}")
         
-        # --- PATH RECONSTRUCTION (Synced with LST) ---
-        parts = base_name.split('_')
-        sat_name = f"noaa-goes{parts[2].replace('G', '')}"
-        product_clean = parts[1] 
-        year, day = parts[3][1:5], parts[3][5:8]
+        # Execute Stage 01
+        success_report["stage_01"] = fn01_process_visuals(
+            file_path, product_out_root, overwrite
+        )
+        
+        duration = round((time.time() - start_ts) / 60, 2)
+        print(f"✅ [glm] Finished in {duration} min")
+        return success_report
 
-        fn_dir = output_base / sat_name / product_clean / year / day / base_name / "fn01"
-        fn_dir.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        print(f"❌ [glm] CRITICAL ERROR: {str(e)}")
+        return success_report
+    finally:
+        sys.stdout, sys.stderr = original_stdout, original_stderr
 
-        print(f"⏰ Start: {datetime.now().strftime('%H:%M:%S')}")
-        print(f"📁 Processing File: {base_name}")
+# --- STAGE FUNCTIONS ---
 
-        if not overwrite and (fn_dir / f"{base_name}_wgs84_transparent.png").exists():
-            print(f"✅  Skipping: Folder {base_name} already exists.")
-            report["glm_gen"] = True
-            return report
+def fn01_process_visuals(file_path: Path, product_out_root: Path, overwrite=False):
+    """
+    Stage 01: GLM Heatmap Generation.
+    Includes: Standard Visuals, Scientific GeoTIFF, and Transparent Overlays.
+    """
+    start_ts = time.time()
+    base_name = file_path.stem
+    fn_dir = product_out_root / "fn01"
+    
+    # Check overwrite
+    if not overwrite and (fn_dir / f"{base_name}_wgs84_transparent.png").exists():
+        print(f"✅ [fn01] Skipping: Products already exist in {fn_dir.name}")
+        return True
 
+    fn_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
         # 1. Extraction & Cleaning
-        print(f"📦 [1/5] Extracting lightning flash data...")
+        print(f"📦 [fn01] [1/5] Extracting lightning flash data...")
         with nc.Dataset(file_path, 'r') as ds:
             lats = np.array(ds.variables['flash_lat'][:]).flatten()
             lons = np.array(ds.variables['flash_lon'][:]).flatten()
@@ -85,7 +119,7 @@ def fn01_process_visuals(input_file, input_base: Path, output_base: Path, overwr
             lons = np.where(lons > 180, lons - 360, lons)
 
         # 2. Heatmap Logic
-        print(f"🔄 [2/5] Generating Gaussian Heatmap (sigma=3.0)...")
+        print(f"🧠 [fn01] [2/5] Generating Gaussian Heatmap (sigma=3.0)...")
         lon_bins = np.linspace(-180, 180, 3601)
         lat_bins = np.linspace(-90, 90, 1801)
         heatmap, _, _ = np.histogram2d(lons, lats, bins=[lon_bins, lat_bins])
@@ -93,7 +127,7 @@ def fn01_process_visuals(input_file, input_base: Path, output_base: Path, overwr
         h_map = np.where(h_map < 0.001, np.nan, h_map)
 
         # 3. Product Generation: Standard Visuals (Black Background)
-        print(f"📸 [3/5] Exporting Standard PNG products...")
+        print(f"📸 [fn01] [3/5] Exporting Standard PNG products...")
         
         # WGS84 Black
         fig_w = plt.figure(figsize=(20, 10), facecolor='black')
@@ -118,16 +152,15 @@ def fn01_process_visuals(input_file, input_base: Path, output_base: Path, overwr
         fig_n.savefig(fn_dir / f"{base_name}_native_full_disk.png", facecolor='black', bbox_inches='tight', dpi=150)
         plt.close(fig_n)
 
-        # 4. NEW: Transparent Overlays (Data Only)
-        print(f"📸 [4/5] Exporting Transparent Overlay products...")
+        # 4. Transparent Overlays (Data Only)
+        print(f"📸 [fn01] [4/5] Exporting Transparent Overlay products...")
         
         # WGS84 Transparent
         fig_wt = plt.figure(figsize=(20, 10), frameon=False)
         ax_wt = plt.axes(projection=ccrs.PlateCarree())
-        ax_wt.set_axis_off() # No borders or axes
+        ax_wt.set_axis_off()
         if lons.size > 0:
             ax_wt.pcolormesh(lon_bins, lat_bins, h_map, cmap='magma', transform=ccrs.PlateCarree())
-        # savefig with transparent=True and no padding
         fig_wt.savefig(fn_dir / f"{base_name}_wgs84_transparent.png", transparent=True, bbox_inches='tight', pad_inches=0, dpi=150)
         plt.close(fig_wt)
 
@@ -142,7 +175,7 @@ def fn01_process_visuals(input_file, input_base: Path, output_base: Path, overwr
         plt.close(fig_nt)
 
         # 5. Scientific GeoTIFF & Metadata
-        print(f"💾 [5/5] Exporting Scientific GeoTIFF & JSON...")
+        print(f"💾 [fn01] [5/5] Exporting Scientific GeoTIFF & JSON...")
         tif_path = fn_dir / f"{base_name}_data_wgs84.tif"
         transform = from_origin(-180, 0.1, 90, 0.1)
         data_to_save = np.flipud(np.nan_to_num(h_map))
@@ -151,51 +184,20 @@ def fn01_process_visuals(input_file, input_base: Path, output_base: Path, overwr
             dst.write(data_to_save.astype('float32'), 1)
 
         duration = round((time.time() - start_ts) / 60, 2)
+        meta = {
+            "source_file": base_name,
+            "version": "v.0.5.2",
+            "stage": "fn01",
+            "flashes_count": int(lons.size),
+            "duration_min": duration,
+            "timestamp": datetime.now().isoformat()
+        }
         with open(fn_dir / f"{base_name}_metadata_fn01.json", 'w') as f:
-            json.dump({"source_file": file_path.name, "product": "GLM_HEATMAP", "flashes_count": int(lons.size),
-                       "duration_min": duration, "pipeline_version": "0.3.5", "stage": "fn01"}, f, indent=4)
+            json.dump(meta, f, indent=4)
 
-        report["glm_gen"] = True
-        print(f"✅ Pipeline complete ({duration} min).")
-        return report
+        print(f"✅ [fn01] Stage complete.")
+        return True
 
     except Exception as e:
-        print(f"❌ CRITICAL ERROR: {str(e)}")
-        return report
-    finally:
-        sys.stdout, sys.stderr = original_stdout, original_stderr
-        
-        
-
-def process_glm_heatmap_single_file(input_file, input_base: Path, output_base: Path, overwrite=False, indent=""):
-    """FDC Orchestrator v0.4.5"""
-    start_ts = time.time()
-    report = {"fn01": False, 
-              #"fn02": False, 
-              #"fn03": False
-              }
-    
-    original_stdout, original_stderr = sys.stdout, sys.stderr
-    sys.stdout = SmartIndentedOutput(original_stdout, indent)
-    sys.stderr = SmartIndentedOutput(original_stderr, indent)
-    
-    try:
-        file_path = Path(input_file).resolve()
-        base_name = file_path.stem
-        rel_path = file_path.relative_to(input_base.resolve())
-        main_out_dir = output_base / rel_path.parent / base_name
-        
-        
-
-        scn_res = fn01_process_visuals(input_file = input_file, input_base = input_base, output_base=output_base, overwrite=overwrite, indent=indent)
-        report["fn01"] = True
-        
-        
-        print(f"✅ Finished in {round((time.time()-start_ts)/60, 2)} min")
-        return report
-
-    except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
-        return report
-    finally:
-        sys.stdout, sys.stderr = original_stdout, original_stderr
+        print(f"❌ [fn01] Error in visual processing: {str(e)}")
+        return False

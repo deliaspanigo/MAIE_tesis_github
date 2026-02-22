@@ -3,7 +3,7 @@ goes-processor processing accumulate \
      --product GLM-L2-LCFA \
      --year 2026 \
      --day 003 \
-     --hour 00 \
+     --hour all \
      --minute all \
      --bin 10minutes \
      --input-dir data_raw/goes_raw \
