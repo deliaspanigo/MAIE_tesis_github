@@ -8,12 +8,16 @@ venv/
 dist/
 build/
 
+# --- IA & RAG (Crucial para v.0.4.0) ---
+
+
 # --- Heavy Data (Excluding all satellite data and results) ---
 data_raw/
 data_processed/
 satpy_cache/
 notebooks/
 notebooks02/
+info_pdf/      # Opcional: Ignora los papers si son muy pesados o tienen copyright
 
 # --- File extensions (Block large binary files) ---
 *.tif
@@ -21,10 +25,7 @@ notebooks02/
 *.png
 *.jpg
 *.jpeg
-
-# Mantener las estructuras de carpetas vacías si lo deseas
-!data_raw/.gitkeep
-!data_processed/.gitkeep
+*.pdf          # Bloqueamos PDFs por defecto para no saturar Git
 
 # --- Logs & Temp ---
 logs/
@@ -35,3 +36,9 @@ logs/
 .vscode/
 .idea/
 .DS_Store
+
+# --- Gitkeeps ---
+# Mantener las estructuras de carpetas vacías
+!data_raw/.gitkeep
+!data_processed/.gitkeep
+!info_pdf/.gitkeep
