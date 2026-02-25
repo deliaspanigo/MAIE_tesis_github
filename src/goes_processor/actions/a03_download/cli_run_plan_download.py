@@ -46,11 +46,9 @@ def validate_minute(ctx, param, value): # <--- Asegúrate que se llame así
 @click.option('--day', required=True, callback=validate_day)
 @click.option('--hour', type=str, required=True, callback=validate_hour, help="HH (00-23) or ALL")
 @click.option('--minute', type=str,required=True, callback=validate_minute, help="mm (00-50) or ALL")
-@click.option('--planner-dir', type=click.Path(exists=True), required=True)
-@click.option('--output-dir', type=click.Path(), required=True)
 @click.option('--overwrite', required=True, type=click.Choice(['True', 'False'], case_sensitive=False))
 @click.option('--check-again', required=True, type=click.Choice(['True', 'False'], case_sensitive=False))
-def run_download_cmd(product, year, day, hour, minute, planner_dir, output_dir, overwrite, check_again):
+def run_download_cmd(product, year, day, hour, minute, overwrite, check_again):
     """v.0.5.9.2 - Orchestrator with ALL/ALL Time Support"""
     
     start_ts = time.time()
@@ -83,8 +81,6 @@ def run_download_cmd(product, year, day, hour, minute, planner_dir, output_dir, 
                 hour=target_hour,
                 minute=target_min,
                 product=p_name,
-                base_folder_planner=planner_dir, 
-                output_root=output_dir,
                 overwrite=overwrite_bool, 
                 check_again=check_again_bool
             )

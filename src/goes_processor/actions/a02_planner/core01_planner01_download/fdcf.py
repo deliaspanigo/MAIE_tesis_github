@@ -35,39 +35,32 @@ def gen_plan_download_ONE_DAY_FDCF(year, day):
         "bucket": bucket,
         "year": year,
         "day": day_str,
-        "date_julian": f"{year}{day_str}",  # Ejemplo: "2026003"
+        "date_julian": f"{year}{day_str}",
         "date_gregorian": date_gregorian,
         "resolution": "2km"
     }
 
-    # 3. Contenedor: Información del Planificador (Metadatos del JSON)
+    # 3. Contenedor: Información del Planificador
     planner_download_info = {
         "file_name": None,           # Se inyecta en el CLI
-        "path_relative": None,       # Se inyecta en el CLI
-        "path_absolute": None,       # Se inyecta en el CLI
-        "is_done": False,
-        "time_file_creation": f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - System time",
-        "time_last_mod": None
+        "path_relative": None,       
+        "path_absolute": None,       
     }
 
     # 4. Inicializar el inventario de archivos (Frecuencia 10 min)
     inventory_files = {}
-    
     hours = [f"{h:02d}" for h in range(24)]
-    # FDCF se genera cada 10 minutos en modo Full Disk (M6)
     minutes = [f"{m:02d}" for m in range(0, 60, 10)] 
     
-    total_slots = len(hours) * len(minutes) # Deberían ser 144 archivos
+    total_slots = len(hours) * len(minutes) 
     counter = 1
     
     for h_str in hours:
         for m_str in minutes:
-            # Timestamp para búsqueda (ej. s20260031200)
             time_id = f"{year}{day_str}{h_str}{m_str}"
             s_time = f"s{time_id}"
-            file_key = f"file{str(counter).zfill(3)}" # Usamos zfill(3) porque son > 100
+            file_key = f"file{str(counter).zfill(3)}"
             
-            # Patrón de búsqueda en S3
             regex_pattern = f"{bucket}/{product}/{year}/{day_str}/{h_str}/OR_ABI-L2-FDCF*{s_time}*.nc"
             
             inventory_files[file_key] = {
@@ -84,14 +77,25 @@ def gen_plan_download_ONE_DAY_FDCF(year, day):
                 "file_exist_local": False,
                 "file_size_mb_web": None,
                 "file_size_mb_local": None,
-                "file_size_mb_web": None,
                 "is_check": False
             }
             counter += 1
-            
+    
+    # --- BLOQUE DE RESUMEN (Summary) ---
+    # Asegúrate de que esta indentación sea exacta
+    summary_info = {
+        "is_done": False,
+        "total_files": None,           
+        "total_time": None,       
+        "total_size_mb": None,      
+        "time_file_creation": f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - System time",
+        "time_last_mod": None
+    }
+    
     # 5. Retorno del Diccionario Unificado
     return {
         "prod_info": prod_info,
         "planner_download_info": planner_download_info,
-        "download_files": inventory_files
+        "download_files": inventory_files,
+        "summary": summary_info,
     }

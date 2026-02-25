@@ -12,7 +12,12 @@ goes-processor download goes-files \
 
 
 
-goes-processor planner gen-plan-download --product ALL --year 2026 --day 003 --output-dir data_planner/p01_download --overwrite True
+goes-processor planner gen-plan-download --product ALL --year 2026 --day 003 --overwrite True
+
+goes-processor planner gen-plan-processing --product ALL --year 2026 --day 003 --overwrite True
+
+
+goes-processor download run-plan-download --product ALL --year 2026 --day 003 --hour ALL --minute ALL  --overwrite False --check-again True
 
 
 goes-processor download goes-files \

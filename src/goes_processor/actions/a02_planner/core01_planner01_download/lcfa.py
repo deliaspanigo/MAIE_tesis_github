@@ -41,17 +41,14 @@ def gen_plan_download_ONE_DAY_LCFA(year, day):
         "resolution": "8km"
     }
 
-    # 4. Container: Planner Metadata (planner_download_info)
+    # 4. Container: Planner Metadata
     planner_download_info = {
         "file_name": None,
         "path_relative": None,
         "path_absolute": None,
-        "is_done": False,
-        "time_file_creation": f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - System time",
-        "time_last_mod": None
     }
     
-    # 5. Initialize File Inventory (High frequency: every 20 sec)
+    # 5. Initialize File Inventory (GLM: cada 20 segundos)
     inventory_files = {}
     hours = [f"{h:02d}" for h in range(24)]
     minutes = [f"{m:02d}" for m in range(0, 60)]
@@ -63,18 +60,14 @@ def gen_plan_download_ONE_DAY_LCFA(year, day):
     for h_str in hours:
         for m_str in minutes:
             for s_str in seconds:
-                # The label used in the JSON (13 digits)
+                # Label de tiempo (13 dígitos)
                 time_id = f"{year}{day_str}{h_str}{m_str}{s_str}"
                 s_time_label = f"s{time_id}"
                 
                 file_key = f"file{str(counter).zfill(4)}"
                 
-                # --- THE FIX ---
-                # We add a '*' immediately after the seconds string (s_time).
-                # This matches 's2026003000000' + '0' (the decisecond) or any other variation.
-                # Example: OR_GLM-L2-LCFA-*s2026003000000*.nc
+                # Regex adaptado para GLM (incluye el wildcard para decisegundos)
                 regex_pattern = f"{bucket}/{product}/{year}/{day_str}/{h_str}/OR_GLM-L2-LCFA*{s_time_label}*.nc"
-
                 
                 inventory_files[file_key] = {
                     "pos_file": f"{str(counter).zfill(4)} of {str(total_slots).zfill(4)}",
@@ -91,14 +84,25 @@ def gen_plan_download_ONE_DAY_LCFA(year, day):
                     "file_exist_local": False,
                     "file_size_mb_web": None,
                     "file_size_mb_local": None,
-                    "file_size_mb_web": None,
                     "is_check": False
                 }
                 counter += 1
                 
-    # 6. Return Unified Dictionary
+    # --- BLOQUE DE RESUMEN (Summary) ---
+    # Corregida la indentación para que esté dentro de la función
+    summary_info = {
+        "is_done": False,
+        "total_files": None,           
+        "total_time": None,       
+        "total_size_mb": None,      
+        "time_file_creation": f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - System time",
+        "time_last_mod": None
+    }
+    
+    # 6. Retorno del Diccionario Unificado
     return {
         "prod_info": prod_info,
         "planner_download_info": planner_download_info,
-        "download_files": inventory_files
+        "download_files": inventory_files,
+        "summary": summary_info,
     }

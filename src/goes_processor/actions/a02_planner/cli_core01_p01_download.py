@@ -1,5 +1,6 @@
 # src/goes_processor/actions/a02_planner/cli_core01_p01_download.py
 
+# --- 1. System Libraries ---
 import click
 import re
 import time
@@ -8,14 +9,16 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Business Logic Imports
+# --- 2. My Libraries ---
 from .core01_planner01_download.lstf   import gen_plan_download_ONE_DAY_LSTF
 from .core01_planner01_download.mcmipf import gen_plan_download_ONE_DAY_MCMIPF
 from .core01_planner01_download.fdcf   import gen_plan_download_ONE_DAY_FDCF
 from .core01_planner01_download.lcfa   import gen_plan_download_ONE_DAY_LCFA
+from goes_processor.HARDCODED_FOLDERS  import get_my_path
 
-# --- 1. CONFIGURATION & STRATEGY ---
 
+
+# --- 3. CONFIGURATION & STRATEGY ---
 PRODUCT_STRATEGY = {
     "ABI-L2-LSTF":   (gen_plan_download_ONE_DAY_LSTF,   "ABI-L2-LSTF"),
     "ABI-L2-MCMIPF": (gen_plan_download_ONE_DAY_MCMIPF, "ABI-L2-MCMIPF"),
@@ -23,7 +26,13 @@ PRODUCT_STRATEGY = {
     "GLM-L2-LCFA":   (gen_plan_download_ONE_DAY_LCFA,   "GLM-L2-LCFA"),
 }
 
-# --- 2. STRICT VALIDATORS ---
+# Creamos la lista de opciones dinámicamente
+PRODUCT_OPTIONS = list(PRODUCT_STRATEGY.keys()) + ["ALL"]
+
+
+
+
+# --- 4. STRICT VALIDATORS ---
 
 def validate_year(ctx, param, value):
     if not re.match(r'^\d{4}$', value):
@@ -35,58 +44,78 @@ def validate_julian_day(ctx, param, value):
         raise click.BadParameter('Day must be exactly 3 digits (e.g., 003).')
     return value
 
-# --- 3. HELPER FUNCTIONS ---
+# --- 5. HELPER FUNCTIONS ---
+class StrictDict(dict):
+    def __init__(self, data):
+        # Convertimos sub-diccionarios a StrictDict de forma recursiva
+        # El diccionario puede cambiar el contenido asocaidoa sus llaves, pero no peude crear neuvas llaves.
+        for key, value in data.items():
+            if isinstance(value, dict):
+                data[key] = StrictDict(value)
+        super().__init__(data)
 
-def execute_save_and_verify(planner_dict, base_output_dir, overwrite):
+    def __setitem__(self, key, value):
+        if key not in self:
+            raise KeyError(
+                f"\n[STRICT ERROR] Attempted to add new key: '{key}'.\n"
+                f"Only existing keys defined in the product template can be modified."
+            )
+        super().__setitem__(key, value)
+        
+############################################################################################################################
+def save_and_verify_json_plan(dict_plan, overwrite):
     """
     Saves the planner JSON using the new nested structure.
-    Fixed version to avoid 'is not in the subpath' error.
     """
-    p_info = planner_dict.get("prod_info", {})
-    # noaa-goes19
-    sat_bucket = p_info.get("bucket", "unknown")
-    year = p_info.get("year", "unknown")
-    day  = p_info.get("day", "unknown")
     
-    # Construcción de rutas usando Path para asegurar compatibilidad
+    # Output first door.
+    base_output_dir = get_my_path("plan_download")
     base_path = Path(base_output_dir)
+    
+    # Subfolders
+    p_info = dict_plan.get("prod_info", {})
+    sat_bucket = p_info.get("bucket", "unknown")  # Example: noaa-goes19
+    year = p_info.get("year", "unknown")  # Example: 2026
+    day  = p_info.get("day", "unknown")   # Example: 003
+    
+    # Target outptu folder path
     target_dir = base_path / sat_bucket / year / day
     target_dir.mkdir(parents=True, exist_ok=True)
     
-    filename = planner_dict["planner_download_info"]["file_name"]
-    full_path = target_dir / filename
+    # File name and file path
+    file_name = dict_plan["planner_download_info"]["file_name"]
+    path_absolute = target_dir / file_name
     
-    if full_path.exists() and not overwrite:
-        click.secho(f"   ⏩ Skipped: {filename} already exists.", fg='yellow')
+    if path_absolute.exists() and not overwrite:
+        click.secho(f"   ⏩ Skipped: {file_name} already exists.", fg='yellow')
         return True
 
     try:
         # Usamos os.path.relpath para evitar errores de subpath de pathlib
-        rel_path = os.path.relpath(full_path, start=os.getcwd())
+        path_relative = os.path.relpath(path_absolute, start=os.getcwd())
         
         # Guardamos rutas en el diccionario antes de escribir el archivo
-        planner_dict["planner_download_info"]["path_relative"] = rel_path
-        planner_dict["planner_download_info"]["path_absolute"] = str(full_path.resolve())
+        dict_plan["planner_download_info"]["path_relative"] = path_relative
+        dict_plan["planner_download_info"]["path_absolute"] = str(path_absolute.resolve())
 
-        with open(full_path, 'w', encoding='utf-8') as f:
-            json.dump(planner_dict, f, indent=4, ensure_ascii=False)
+        with open(path_absolute, 'w', encoding='utf-8') as f:
+            json.dump(dict_plan, f, indent=4, ensure_ascii=False)
         
-        click.secho(f"   ✅ Saved: {rel_path}", fg='green')
+        click.secho(f"   ✅ Saved: {path_relative}", fg='green')
         return True
     except Exception as e:
-        click.secho(f"   ❌ Error saving {filename}: {e}", fg='red')
+        click.secho(f"   ❌ Error saving {file_name}: {e}", fg='red')
         return False
 
 # --- 4. CLI COMMAND ---
 
 @click.command(name="gen-plan-download")
-@click.option('--product', type=click.Choice(['ABI-L2-LSTF', 'ABI-L2-MCMIPF', 'ABI-L2-FDCF', 'GLM-L2-LCFA', 'ALL'], case_sensitive=False), required=True)
+@click.option('--product', type=click.Choice(PRODUCT_OPTIONS, case_sensitive=False), required=True, help="Product to process (from PRODUCT_STRATEGY keys)")
 @click.option('--year', callback=validate_year, required=True)
 @click.option('--day', callback=validate_julian_day, required=True)
-@click.option('--output-dir', type=click.Path(), default="data_planner/p01_download")
 @click.option('--overwrite', type=click.Choice(['True', 'False'], case_sensitive=False), default='False')
-def run_planner_download_cmd(product, year, day, output_dir, overwrite):
-    """v.0.5.0 - Compatible con estructura de bloques (prod_info)"""
+def run_planner_download_cmd(product, year, day, overwrite):
+    """v.0.5.0 - Compatible con estructura de bloques y StrictDict"""
     start_ts = time.time()
     overwrite_bool = overwrite.lower() == 'true'
     
@@ -100,24 +129,33 @@ def run_planner_download_cmd(product, year, day, output_dir, overwrite):
         gen_func, _ = PRODUCT_STRATEGY[p_name]
 
         try:
-            # 1. Generar el diccionario base (ya viene con prod_info y planner_download_info)
-            planner_dict = gen_func(year, day)
+            # 1. Generar el diccionario base desde la lógica de negocio
+            raw_data = gen_func(year, day)
             
-            if isinstance(planner_dict, str) and "Error" in planner_dict:
-                click.secho(f"   ❌ {planner_dict}", fg='red')
+            if isinstance(raw_data, str) and "Error" in raw_data:
+                click.secho(f"   ❌ {raw_data}", fg='red')
                 continue
 
+            # --- APLICACIÓN DEL STRICTDICT ---
+            # Convertimos a StrictDict para bloquear la creación de nuevas keys
+            # Esto protege tanto el nivel raíz como los sub-bloques (prod_info, etc.)
+            dict_plan = StrictDict(raw_data)
+
             # 2. Inyectar nombre del archivo en el bloque correcto
-            # Usamos los datos de prod_info para el nombre
-            str_year = planner_dict["prod_info"]["year"]
-            str_day  = planner_dict["prod_info"]["day"]
-            filename = f"planner_download_{str_year}_{str_day}_{p_name}.json"
+            # Si 'prod_info' o 'year' no existieran en el template, esto fallaría aquí mismo.
+            str_year = dict_plan["prod_info"]["year"]
+            str_day  = dict_plan["prod_info"]["day"]
+            file_name = f"planner_download_{str_year}_{str_day}_{p_name}.json"
             
-            planner_dict["planner_download_info"]["file_name"] = filename
+            # Actualizamos el valor (permitido porque la key ya existe en el template)
+            dict_plan["planner_download_info"]["file_name"] = file_name
 
             # 3. Guardar y verificar
-            execute_save_and_verify(planner_dict, output_dir, overwrite_bool)
+            # El execute_save_and_verify ahora recibe un objeto StrictDict
+            save_and_verify_json_plan(dict_plan, overwrite_bool)
 
+        except KeyError as ke:
+            click.secho(f"   🛑 Structure Error in {p_name}: {ke}", fg='magenta', bold=True)
         except Exception as e:
             click.secho(f"   💥 Critical Error {p_name}: {e}", fg='red')
 
