@@ -1,0 +1,801 @@
+{
+    "prod_info": {
+        "satellite": "GOES-19",
+        "product": "ABI-L2-MCMIPF",
+        "bucket": "noaa-goes19",
+        "year": "2026",
+        "day": "003",
+        "date_julian": "2026003",
+        "date_gregorian": "2026-01-03",
+        "resolution": "2 km (some bands 0.5 km or 1 km)",
+        "expected_total_files_one_day": 144,
+        "time_lapse": "10 minutes",
+        "sat_position": "east"
+    },
+    "planner_download_info": {
+        "file_name": "plan_download_2026_003_GOES19_east_ABI-L2-MCMIPF.json",
+        "path_relative": "data_planner/p01_download/2026/003/plan_download_2026_003_GOES19_east_ABI-L2-MCMIPF.json",
+        "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_planner/p01_download/2026/003/plan_download_2026_003_GOES19_east_ABI-L2-MCMIPF.json",
+        "generated_at": "2026-02-26T17:03:14.123708"
+    },
+    "download_inventory": {
+        "file001": {
+            "pos_file": "001 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "00",
+            "minute": "00",
+            "s_time": "s20260030000",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 12:02:43"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600300*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600300*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030010228_e20260030019547_c20260030020011.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030010228_e20260030019547_c20260030020011.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 258.49
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file002": {
+            "pos_file": "002 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "01",
+            "minute": "00",
+            "s_time": "s20260030100",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:13:21"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600301*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600301*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030150228_e20260030159548_c20260030200011.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030150228_e20260030159548_c20260030200011.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 238.99
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file003": {
+            "pos_file": "003 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "02",
+            "minute": "00",
+            "s_time": "s20260030200",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:14:44"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600302*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600302*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030250228_e20260030259548_c20260030300009.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030250228_e20260030259548_c20260030300009.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 230.24
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file004": {
+            "pos_file": "004 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "03",
+            "minute": "00",
+            "s_time": "s20260030300",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 12:07:22"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600303*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600303*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030340228_e20260030349548_c20260030350009.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030340228_e20260030349548_c20260030350009.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 225.42
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file005": {
+            "pos_file": "005 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "04",
+            "minute": "00",
+            "s_time": "s20260030400",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:27:58"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600304*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600304*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030450228_e20260030459542_c20260030500012.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030450228_e20260030459542_c20260030500012.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 224.96
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file006": {
+            "pos_file": "006 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "05",
+            "minute": "00",
+            "s_time": "s20260030500",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:29:02"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600305*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600305*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030550230_e20260030559544_c20260030600023.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030550230_e20260030559544_c20260030600023.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 223.69
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file007": {
+            "pos_file": "007 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "06",
+            "minute": "00",
+            "s_time": "s20260030600",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:30:03"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600306*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600306*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030650230_e20260030659538_c20260030700023.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030650230_e20260030659538_c20260030700023.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 227.94
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file008": {
+            "pos_file": "008 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "07",
+            "minute": "00",
+            "s_time": "s20260030700",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:31:26"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600307*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600307*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030750230_e20260030759544_c20260030800017.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030750230_e20260030759544_c20260030800017.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 236.58
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file009": {
+            "pos_file": "009 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "08",
+            "minute": "00",
+            "s_time": "s20260030800",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:32:38"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600308*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600308*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030850230_e20260030859538_c20260030900022.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030850230_e20260030859538_c20260030900022.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 247.24
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file010": {
+            "pos_file": "010 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "09",
+            "minute": "00",
+            "s_time": "s20260030900",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:33:58"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600309*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600309*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030950230_e20260030959544_c20260031000019.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260030950230_e20260030959544_c20260031000019.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 259.18
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file011": {
+            "pos_file": "011 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "10",
+            "minute": "00",
+            "s_time": "s20260031000",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:35:28"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600310*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600310*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031050230_e20260031059551_c20260031100015.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031050230_e20260031059551_c20260031100015.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 273.2
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file012": {
+            "pos_file": "012 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "11",
+            "minute": "00",
+            "s_time": "s20260031100",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:36:54"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600311*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600311*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031150230_e20260031159550_c20260031200016.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031150230_e20260031159550_c20260031200016.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 288.54
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file013": {
+            "pos_file": "013 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "12",
+            "minute": "00",
+            "s_time": "s20260031200",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:38:24"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600312*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600312*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031250230_e20260031259550_c20260031300018.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031250230_e20260031259550_c20260031300018.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 303.53
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file014": {
+            "pos_file": "014 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "13",
+            "minute": "00",
+            "s_time": "s20260031300",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:40:11"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600313*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600313*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031350230_e20260031359545_c20260031400023.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031350230_e20260031359545_c20260031400023.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 317.63
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file015": {
+            "pos_file": "015 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "14",
+            "minute": "00",
+            "s_time": "s20260031400",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:41:53"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600314*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600314*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031450231_e20260031459539_c20260031500024.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031450231_e20260031459539_c20260031500024.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 330.9
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file016": {
+            "pos_file": "016 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "15",
+            "minute": "00",
+            "s_time": "s20260031500",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:43:46"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600315*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600315*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031550231_e20260031559544_c20260031600020.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031550231_e20260031559544_c20260031600020.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 339.54
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file017": {
+            "pos_file": "017 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "16",
+            "minute": "00",
+            "s_time": "s20260031600",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:45:34"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600316*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600316*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031650231_e20260031659545_c20260031700023.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031650231_e20260031659545_c20260031700023.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 343.59
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file018": {
+            "pos_file": "018 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "17",
+            "minute": "00",
+            "s_time": "s20260031700",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:47:14"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600317*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600317*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031750228_e20260031759548_c20260031800004.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031750228_e20260031759548_c20260031800004.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 343.06
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file019": {
+            "pos_file": "019 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "18",
+            "minute": "00",
+            "s_time": "s20260031800",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:49:07"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600318*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600318*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031850228_e20260031859548_c20260031900015.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031850228_e20260031859548_c20260031900015.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 337.76
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file020": {
+            "pos_file": "020 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "19",
+            "minute": "00",
+            "s_time": "s20260031900",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:50:47"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600319*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600319*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031950228_e20260031959537_c20260032000012.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260031950228_e20260031959537_c20260032000012.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 326.65
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file021": {
+            "pos_file": "021 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "20",
+            "minute": "00",
+            "s_time": "s20260032000",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:52:36"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600320*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600320*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260032050228_e20260032059542_c20260032100009.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260032050228_e20260032059542_c20260032100009.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 311.55
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file022": {
+            "pos_file": "022 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "21",
+            "minute": "00",
+            "s_time": "s20260032100",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:54:01"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600321*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600321*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260032150229_e20260032159537_c20260032200017.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260032150229_e20260032159537_c20260032200017.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 294.17
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file023": {
+            "pos_file": "023 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "22",
+            "minute": "00",
+            "s_time": "s20260032200",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:55:20"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600322*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600322*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260032250229_e20260032259549_c20260032300010.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260032250229_e20260032259549_c20260032300010.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 276.86
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        },
+        "file024": {
+            "pos_file": "024 of 144",
+            "year": "2026",
+            "day": "003",
+            "hour": "23",
+            "minute": "00",
+            "s_time": "s20260032300",
+            "mini_summary": {
+                "is_ready": true,
+                "is_done": true,
+                "time_last_mod": "2026-02-24 03:56:43"
+            },
+            "file_s3": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600323*.nc",
+                "file_name": null,
+                "file_exists_web": false,
+                "file_size_mb_web": null
+            },
+            "file_local": {
+                "regex": "noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s202600323*.nc",
+                "file_name": null,
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260032350229_e20260032359543_c20260040000008.nc",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003/OR_ABI-L2-MCMIPF-M6_G19_s20260032350229_e20260032359543_c20260040000008.nc",
+                "file_exists_local": true,
+                "file_size_mb_local": 262.27
+            },
+            "folder_local": {
+                "path_relative": "data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "path_absolute": "/home/legion/bulk/MAIE_tesis2026/f01_code/MAIE_tesis_github/data_raw/goes_raw/noaa-goes19/ABI-L2-MCMIPF/2026/003",
+                "folder_exists_local": true
+            }
+        }
+    },
+    "summary": {
+        "is_done": true,
+        "total_files_expected": 144,
+        "total_files_ready": 24,
+        "total_files_downloaded": 24,
+        "total_time": null,
+        "total_size_mb": 6721.98,
+        "time_file_creation": "2026-02-26T17:03:14.123750",
+        "time_last_mod": "2026-02-24 12:07:22"
+    }
+}

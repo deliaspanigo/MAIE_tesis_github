@@ -3,10 +3,10 @@ __version__ = "0.5.9"
 
 try:
     # 1. Import the planner CLI (exposed as 'cli' in step 1)
-    from .actions.a02_planner import cli as planner_cli
+    from .actions.a02_planning.a02_planning_cli import planning as planning_group
     
     # 2. Import the downloader CLI
-    from .actions.a03_download.download_cli import cli as download_cli
+    #from .actions.a03_download.download_cli import cli as download_cli
     
     # 3. Logger
     from .utils.logger import setup_legion_logger

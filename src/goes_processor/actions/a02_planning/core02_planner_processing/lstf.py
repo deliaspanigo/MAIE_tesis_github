@@ -64,12 +64,13 @@ def gen_dict_outputs_fn01(raw_file_name, bucket, product, year, day_str, path_pr
     
     # 2. Diccionario de Nombres
     names = {
-        "native_grey_png":  f"{base}_fn01_native_grey.png",
-        "native_color_png": f"{base}_fn01_native_color.png",
+        "metadata_json":  f"{base}_metadata.json",
+        "goes_east_grey_png":  f"{base}_fn01_goes_east_grey.png",
+        "goes_east_color_png": f"{base}_fn01_goes_east_color.png",
         "wgs84_grey_png":   f"{base}_fn01_wgs84_grey.png",
         "wgs84_color_png":  f"{base}_fn01_wgs84_color.png",
         "wgs84_grey_tif":   f"{base}_fn01_wgs84_grey.tif",
-        "wgs84_color_tif":  f"{base}_fn01_wgs84_color.tif"
+        "wgs84_color_tif":  f"{base}_fn01_wgs84_color.tif",
     }
     
     # 3. Construcción de Rutas (Absolutas vs Relativas)
@@ -80,10 +81,10 @@ def gen_dict_outputs_fn01(raw_file_name, bucket, product, year, day_str, path_pr
     return {
         "folder_relative": str_fn01_relative,
         "folder_absolute": str(path_fn01_absolute),
-        "dict_file_name_fn01": names,
-        "dict_file_path_absolute_fn01": dict_abs,
-        "dict_file_path_relative_fn01": dict_rel,
-        "dict_file_exists_fn01": {k: False for k in names.keys()},
+        "dict_file_name": names,
+        "dict_file_path_absolute": dict_abs,
+        "dict_file_path_relative": dict_rel,
+        "dict_file_exists": {k: False for k in names.keys()},
         "is_done": False
     }
 
@@ -106,13 +107,21 @@ def gen_plan_processing_ONE_DAY_LSTF(year, day):
         download_data = json.load(f)
 
     processing_files = {}
-    for file_key, d_info in download_data["download_files"].items():
+    for file_key, d_info in download_data["download_inventory"].items():
         raw_file_name = d_info.get("file_name") or "PENDING_DOWNLOAD"
         
-        processing_files[file_key] = {
-            "pos_file": d_info["pos_file"],
+        # --- CAMBIO DE NOMBRE DE KEY ---
+        # Si file_key es "file01", process_key será "process01"
+        process_key = file_key.replace("file", "process")
+        
+        processing_files[process_key] = {
+            "pos_process": d_info["pos_file"],
             "time_metadata": {
-                "hour": d_info["hour"], "minutes": d_info["minutes"], "s_time": d_info["s_time"]
+                "year": d_info["year"],
+                "day": d_info["day"],
+                "hour": d_info["hour"], 
+                "minutes": d_info["minutes"], 
+                "s_time": d_info["s_time"]
             },
             "inputs": {
                 "raw_nc": {
@@ -131,9 +140,9 @@ def gen_plan_processing_ONE_DAY_LSTF(year, day):
         "prod_info": download_data["prod_info"],
         "summary": {
             "is_done": False,
-            "total_files": len(download_data["download_files"]),
+            "total_files": len(download_data["download_inventory"]),
             "time_file_creation": f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - System time",
             "time_last_mod": None
         },
-        "processing_files": processing_files
+        "processing_inventory": processing_files
     }

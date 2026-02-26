@@ -59,7 +59,7 @@ def run_plan_download(year, day, product, hour, minute, overwrite=False, check_a
     with open(full_json_path, 'r', encoding='utf-8') as f:
         planner_data = json.load(f)
 
-    all_files = planner_data.get("download_files", {})
+    all_files = planner_data.get("download_inventory", {})
     summary = planner_data.get("summary", {})
     
     filtered_files = {
