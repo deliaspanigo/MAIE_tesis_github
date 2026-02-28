@@ -11,8 +11,7 @@
         "is_done": false,
         "total_files_expected": 24,
         "total_files_ready": 0,
-        "time_file_creation": "2026-02-28T22:41:38.088534",
-        "total_size_mb": 0.0
+        "time_file_creation": "2026-02-28T23:37:54.763894"
     },
     "plan_download_self_info": {
         "file_name": "plan_01_download_2026_003_GOES19_east_ABI-L2-LSTF.json",
