@@ -1,30 +1,33 @@
-# =============================================================================
-# FILE PATH: src/goes_processor/actions/a02_planning/a02_planning_cli.py
-# Version: 0.1.8 (Final Naming Sync)
-# =============================================================================
-
+"""
+Path: src/goes_processor/actions/a02_planning/a02_planning_cli.py
+Description: Planning orchestrator. Action ID: a02
+"""
 import click
+import sys
 
-# IMPORTACIONES PROTEGIDAS
+# Import Gen Plan
 try:
-    from .core01_planner_download.cli01_gen_plan_download import gen_plan_cmd
-    from .core01_planner_download.cli02_check_plan import check_plan_cmd
+    from goes_processor.actions.a02_planning.core01_planner_download.cli01_gen_plan_download import gen_plan_download_command
 except ImportError as e:
-    click.secho(f"\n💥 [ROUTER ERROR] Could not find CLI modules: {e}", fg='red', bold=True)
-    raise SystemExit(1)
+    print(f"❌ Error importing gen-plan: {e}")
+    gen_plan_download_command = None
 
-@click.group()
+# Import Check Plan
+try:
+    from goes_processor.actions.a02_planning.core01_planner_download.cli02_check_plan import check_plan_command
+except ImportError as e:
+    print(f"❌ Error importing check-plan: {e}")
+    check_plan_command = None
+
+@click.group(name="planning")
 def planning_group():
-    """MASTER PLANNING INTERFACE - GOES Processor"""
+    """Actions for data planning and verification."""
     pass
 
-# --- REGISTRO CON EL NOMBRE QUE TÚ QUIERES ---
-# Al poner name="gen-plan-download", Click esperará esa frase exacta en la terminal
-planning_group.add_command(gen_plan_cmd, name="gen-plan-download")
-planning_group.add_command(check_plan_cmd, name="check-plan-download")
+# Registration
+if gen_plan_download_command:
+    planning_group.add_command(gen_plan_download_command)
 
-# Alias para el main.py
-planning = planning_group
-
-if __name__ == '__main__':
-    planning_group()
+if check_plan_command:
+    # This MUST match the @click.command(name="check-plan-download") in cli02
+    planning_group.add_command(check_plan_command)
