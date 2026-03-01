@@ -1,6 +1,6 @@
 # =============================================================================
-# FILE PATH: src/goes_processor/info/goes_prod.py
-# Version: 0.1.8 (Strict Library & Integrity Validation)
+# FILE PATH: src/goes_processor/SoT/goes_prod.py
+# Version: 1.0.1 (Strict Library & Integrity Validation)
 # =============================================================================
 
 try:
@@ -8,7 +8,7 @@ try:
     import re
 except ImportError as e:
     print("\n" + "="*80)
-    print(f" [CRITICAL ERROR] - [info - goes_prod.py]")
+    print(f" [CRITICAL ERROR] - [SoT - goes_prod.py]")
     print("="*80)
     print(f" Failed to load base libraries: {e}")
     print(" Please verify that your virtual environment (venv) is active.")
@@ -16,7 +16,7 @@ except ImportError as e:
     raise SystemExit(1)
 
 # ===================================================================
-# REQUIRED KEYS
+# REQUIRED KEYS (Mandatory for all products)
 # ===================================================================
 REQUIRED_KEYS = frozenset({
     "full_name", "description", "level", "init_file_name",
@@ -38,8 +38,8 @@ REQUIRED_VECTORIAL_KEYS = frozenset({
 # ===================================================================
 _PRIVATE_PRODUCTS = {
     "ABI-L2-LSTF": {
-        "full_name": "Land Surface Temperature (Full Disk)",
-        "description": "Land Surface Temperature product",
+        "full_name": "Land Surface Temperature",
+        "description": "Land Surface Temperature product (Full Disk)",
         "level": "L2",
         "init_file_name": "OR_ABI-L2-LSTF-M6_G",
         "units": "Kelvin (original) → Celsius (post-processed)",
@@ -59,7 +59,73 @@ _PRIVATE_PRODUCTS = {
             "seconds": None
         }
     },
-    # ... (Tus otros productos ABI-L2-MCMIPF, ABI-L2-FDCF, GLM-L2-LCFA)
+    "ABI-L2-MCMIPF": {
+        "full_name": "Cloud and Moisture Imagery",
+        "description": "Multiband imagery product (Full Disk)",
+        "level": "L2",
+        "init_file_name": "OR_ABI-L2-MCMIPF-M6_G",
+        "units": "Reflectance/Brightness Temp",
+        "typical_range": "0-100% / 0-400K",
+        "main_use": "General forecasting and imagery",
+        "notes": "Full Disk, contains all ABI bands",
+        "total_files_one_day": 144,
+        "time_lapse": "01hour",
+        "time_lapse_label": "time_lapse_01hour",
+        "type": "raster",
+        "cadence_full_disk": "1 hour",
+        "resolution_nominal": "2 km",
+        "shape_full_disk": (5424, 5424),
+        "default_time": {
+            "hours": [f"{m:02d}" for m in range(0, 24, 1)], 
+            "minutes": [f"{m:02d}" for m in range(0, 60, 10)], 
+            "seconds": None
+        }
+    },
+    "ABI-L2-FDCF": {
+        "full_name": "Fire Detection and Characterization",
+        "description": "Fire hot spot detection and characterization (Full Disk)",
+        "level": "L2",
+        "init_file_name": "OR_ABI-L2-FDCF-M6_G",
+        "units": "Kelvin (Fire Temperature), Megawatts (Fire Power)",
+        "typical_range": "300K - 1200K",
+        "main_use": "Wildfire detection and monitoring",
+        "notes": "Includes Fire Temperature, Area, and Power (FRP).",
+        "total_files_one_day": 144,
+        "time_lapse": "01hour",
+        "time_lapse_label": "time_lapse_01hour",
+        "type": "raster",
+        "cadence_full_disk": "1 hour",
+        "resolution_nominal": "2 km",
+        "shape_full_disk": (5424, 5424),
+        "default_time": {
+            "hours": [f"{m:02d}" for m in range(0, 24, 1)], 
+            "minutes": [f"{m:02d}" for m in range(0, 60, 10)], 
+            "seconds": None
+        }
+    },
+    "GLM-L2-LCFA": {
+        "full_name": "Lightning Detection",
+        "description": "Geostationary Lightning Mapper events",
+        "level": "L2",
+        "init_file_name": "OR_GLM-L2-LCFA_G",
+        "units": "Events/Flashes",
+        "typical_range": "N/A",
+        "main_use": "Storm intensification monitoring",
+        "notes": "Vectorial data",
+        "total_files_one_day": 4320, 
+        "time_lapse": "20sec",
+        "time_lapse_label": "time_lapse_20sec",
+        "type": "vectorial",
+        "cadence": "20 seconds",
+        "cadence_grouped": "1 min",
+        "resolution_spatial": "8 km",
+        "shape": None,
+        "default_time": {
+            "hours": [f"{m:02d}" for m in range(0, 24, 1)], 
+            "minutes": [f"{m:02d}" for m in range(0, 60,  1)], 
+            "seconds": [f"{m:02d}" for m in range(0, 60, 20)], 
+        }
+    }
 }
 
 # ===================================================================
@@ -70,12 +136,12 @@ def _validate_module_integrity():
     ctx = "[CRITICAL - goes_prod.py - _validate_module_integrity]"
     
     for prod_id, data in _PRIVATE_PRODUCTS.items():
-        # 1. Common keys
+        # 1. Check Common keys
         missing_common = REQUIRED_KEYS - data.keys()
         if missing_common:
             raise ImportError(f"\n{ctx} Product '{prod_id}' is missing common keys: {missing_common}\n")
 
-        # 2. Type-specific
+        # 2. Check Type-specific keys
         p_type = data.get("type")
         if p_type == "raster":
             missing = REQUIRED_RASTER_KEYS - data.keys()
@@ -87,7 +153,7 @@ def _validate_module_integrity():
         if missing:
             raise ImportError(f"\n{ctx} Type '{p_type}' Mismatch in '{prod_id}'. Missing: {missing}\n")
 
-# Ejecución automática al importar
+# Automatic execution upon import
 _validate_module_integrity()
 
 # ===================================================================

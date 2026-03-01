@@ -34,4 +34,5 @@ logs/
 
 # --- KEEP STRUCTURE (The "Exclusions") ---
 # Esto permite que Git vea el archivo .gitkeep aunque la carpeta esté ignorada
-!**/ .gitkeep
+!**/ .gitkeepnotebooks02/collage_maps/collage_maps.ipynb
+*.ipynb

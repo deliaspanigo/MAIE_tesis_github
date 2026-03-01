@@ -1,58 +1,69 @@
 """
 Path: src/goes_processor/actions/a02_planning/core01_planner_download/cli01_gen_plan_download.py
-Description: CLI Interface for generating GOES download plans.
-This module defines the 'gen-plan-download' command and its arguments.
+Version: 1.0.1 (Corrected SoT Path)
 """
 
-import sys
-
-# 1. Try to import external dependencies
 try:
     import click
+    import sys
+    from pathlib import Path
 except ImportError as e:
-    print(f"❌ Dependency Error: 'click' library not found. {e}")
-    sys.exit(1)
+    print(f"\n❌ [CRITICAL ERROR] Missing core system libraries: {e}")
+    raise SystemExit(1)
 
-# 2. Try to import internal logic engine
 try:
-    # This must match the function name in code01_gen_plan_download.py
-    from goes_processor.actions.a02_planning.core01_planner_download.code01_gen_plan_download import execute_gen_plan
+    # --- CORRECTED IMPORT PATH ---
+    # We changed 'info' to 'SoT' to match your folder structure
+    from goes_processor.SoT.goes_prod import AVAILABLE_GOES_PRODUCTS
+    
+    try:
+        from .code01_gen_plan_download import execute_gen_plan
+    except (ImportError, ValueError):
+        from goes_processor.actions.a02_planning.core01_planner_download.code01_gen_plan_download import execute_gen_plan
+
 except ImportError as e:
-    print(f"❌ Critical Import Error in 'cli01_gen_plan_download.py': {e}")
+    print("\n" + "!"*80)
+    print(f" [CRITICAL ERROR] - Internal Module Mismatch")
+    print("!"*80)
+    print(f" Could not find: {e}")
+    print(f" Current Directory: {Path.cwd()}")
+    print(" Verify that 'src' is in your PYTHONPATH.")
+    print("!"*80 + "\n")
     execute_gen_plan = None
 
 @click.command(name="gen-plan-download")
-@click.option('--sat-position', required=True, type=click.Choice(['east', 'west']), help='Satellite position (east/west)')
-@click.option('--product', required=True, help='GOES Product (e.g., ABI-L2-LSTF)')
-@click.option('--year', required=True, type=int, help='Year YYYY')
-@click.option('--day', required=True, type=str, help='Julian Day DDD (e.g., 003)')
-@click.option('--overwrite', default=False, type=bool, help='Overwrite existing JSON plan')
-@click.option('--check-local', default=True, type=bool, help='Check if files already exist in local storage')
+@click.option('--sat-position', required=True, type=click.Choice(['east', 'west']))
+@click.option('--product', required=True)
+@click.option('--year', required=True, type=int)
+@click.option('--day', required=True, type=str)
+@click.option('--overwrite', default=False, type=bool)
+@click.option('--check-local', default=True, type=bool)
 def gen_plan_download_command(sat_position, product, year, day, overwrite, check_local):
-    """
-    Generate a JSON download plan for GOES data.
-    This command creates a roadmap of files to be downloaded from S3.
-    """
+    """GOES Download Planning Interface."""
+
     if execute_gen_plan is None:
-        click.echo("🚫 Logic engine (code01) is unavailable. Check import errors above.", err=True)
+        click.echo(click.style("🚫 Planning engine is unavailable.", fg='red', bold=True))
         sys.exit(1)
 
-    click.echo(f"📋 Task: Generating download plan...")
-    click.echo(f"📍 Satellite: {sat_position} | Product: {product} | Date: {year}-{day}")
+    product_input = product.strip().upper()
     
-    # 3. Call the core logic engine
-    try:
-        execute_gen_plan(
-            sat_position=sat_position,
-            product=product,
-            year=year,
-            day=day,
-            overwrite=overwrite,
-            check_local=check_local
-        )
-        click.echo("✅ Plan generation process finished.")
-    except Exception as e:
-        click.echo(f"💥 Runtime Error during plan generation: {e}", err=True)
+    if product_input == "ALL":
+        products_to_process = AVAILABLE_GOES_PRODUCTS
+        click.echo(click.style(f"📦 'ALL' mode active. Queueing {len(products_to_process)} products.", fg='cyan'))
+    elif product_input in AVAILABLE_GOES_PRODUCTS:
+        products_to_process = [product_input]
+    else:
+        click.echo(click.style(f"❌ ERROR: '{product}' is not valid.", fg='red', bold=True))
+        click.echo(f"🔍 Valid Options: {', '.join(AVAILABLE_GOES_PRODUCTS)} or 'ALL'")
+        return
+
+    for current_prod in products_to_process:
+        click.echo(click.style(f"🛠️  Planning: {current_prod}", fg='green', bold=True))
+        try:
+            execute_gen_plan(sat_position, current_prod, year, day, overwrite, check_local)
+            click.echo(f"✅ Success: {current_prod} plan ready.\n")
+        except Exception as e:
+            click.echo(click.style(f"💥 Error in {current_prod}: {e}", fg='red'), err=True)
 
 if __name__ == "__main__":
     gen_plan_download_command()
