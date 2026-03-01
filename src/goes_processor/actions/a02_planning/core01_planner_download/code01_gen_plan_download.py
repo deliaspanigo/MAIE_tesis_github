@@ -80,33 +80,46 @@ def generate_download_plan_day(sat_position: str, product_id: str, year: str, da
 
         for counter, t_id in enumerate(time_slots, 1):
             selected_file = f"{init_fn}{sat_id}_s{t_id}"
+            selected_file_regex = f"{selected_file}*.nc"
             
             # Local Folder Structure: bucket / product / year / day / hour
             hour_folder = t_id[7:9] if len(t_id) >= 9 else "00"
             folder_path_part = Path(bucket) / product_id / year / day / hour_folder
             
             file_key = f"file{counter:0{max_digits}d}"
+            full_folder_path = (goes_raw_root / folder_path_part).resolve()
+            
             
             inventory_files[file_key] = {
                 "pos_file": f"{counter:0{max_digits}d} of {total_expected:0{max_digits}d}",
                 "time_stamp": t_id,
-                "mini_summary": {"is_ready": True, "is_done": False, "time_last_mod": None},
+                "mini_summary": {"is_ready": True, "exists_online": None, "exists_local": None, "is_done": None, "time_last_mod": None},
                 "file_s3": {
                     "bucket": bucket,
-                    "prefix": f"{product_id}/{year}/{day}/{hour_folder}",
-                    "regex": f"{selected_file}*.nc",
-                    "file_exists_web": False,
+                    "prefix_day": f"{product_id}/{year}/{day}",
+                    "prefix_hour": f"{product_id}/{year}/{day}/{hour_folder}",
+                    "init_name": selected_file,
+                    "regex": selected_file_regex,
+                    "file_name": None,
+                    "exists_online": None,
+                    "file_size_mb": None,
+                    "time_init_download": None,
+                    "time_end_download": None,
+                    "dif_time_sec": None,
                 },
                 "file_local": {
-                    "file_name_expected": f"{selected_file}.nc",
-                    "path_absolute": str((goes_raw_root / folder_path_part / f"{selected_file}.nc").resolve()),
+                    "init_name": selected_file,
+                    "regex": selected_file_regex,
+                    "file_name": None,
+                    "path_absolute": None,
                     "path_relative": None, 
-                    "file_exists_local": False,
-                    "file_size_mb_local": None,
+                    "exists_local": None,
+                    "file_size_mb": None,
                 },
-                "folder_local": {
-                    "path_absolute": str((goes_raw_root / folder_path_part).resolve()),
-                    "folder_exists_local": False
+               "folder_local": {
+                    "path_relative": str(full_folder_path.relative_to(goes_raw_root)),
+                    "path_absolute": str(full_folder_path),
+                    "folder_exists_local": None
                 }
             }
 
@@ -121,12 +134,15 @@ def generate_download_plan_day(sat_position: str, product_id: str, year: str, da
                 "bucket_name": bucket,
                 "date_julian": f"{year}{day}",
                 "total_files_one_day": total_expected,
+                "prefix_day": f"{product_id}/{year}/{day}",
             },
             "summary": {
-                "is_done": False,
+                "is_done": None,
                 "total_files_expected": total_expected,
                 "total_files_ready": 0,
-                "time_file_creation": datetime.now().isoformat(),
+                "timestamp_file_creation": datetime.now().isoformat(),
+                "timestamp_file_last_mod": datetime.now().isoformat(),
+                "timestamp_file_done": datetime.now().isoformat(),
             },
             "plan_download_self_info": {
                 "file_name": get_plan_download_file_name(year, day, sat_id, sat_position, product_id),

@@ -1,0 +1,2 @@
+# Opción A: Resolución Estándar (Recomendada para la mayoría de los casos)
+!wget https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73751/world.topo.bathy.200407.3x5400x2700.jpg -O nasa_blue_marble_wgs84.jpg

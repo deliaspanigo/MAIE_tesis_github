@@ -1,48 +1,37 @@
-# --- Python ---
+# =============================================================
+# MAIE_tesis_github - GITIGNORE (v0.0.4)
+# =============================================================
+
+# --- Python & Env ---
+venv/
 __pycache__/
 *.py[cod]
-*$py.class
-venv/
 .env
 *.egg-info/
-dist/
-build/
 
-# --- IA & RAG (Crucial para v.0.4.0) ---
-
-
-# --- Heavy Data (Excluding all satellite data and results) ---
-data_raw/
-data_processed/
+# --- Heavy Data Folders (Ignore content, keep folder via .gitkeep) ---
+data_raw/**/*
+data_proc/**/*
+data_goes_output/**/*
+pruebas_goes/**/*
 satpy_cache/
-notebooks/
-notebooks02/
-info_pdf/      # Opcional: Ignora los papers si son muy pesados o tienen copyright
+notebooks/resample_cache/
 
-# --- File extensions (Block large binary files) ---
-*.tif
+# --- Heavy File Extensions (Safety Net) ---
 *.nc
-*.png
+*.nc.tmp
+*.tif
 *.jpg
-*.jpeg
-*.pdf          # Bloqueamos PDFs por defecto para no saturar Git
+*.png
+*.pdf
 
-# --- Logs & Temp ---
+# --- Notebooks (A veces pesan por los plots, opcional ignorarlos) ---
+# .ipynb_checkpoints/
+
+# --- Logs ---
 logs/
 *.log
-.cache/
 
-# --- Editor ---
-.vscode/
-.idea/
-.DS_Store
-
-# --- Gitkeeps ---
-# Mantener las estructuras de carpetas vacías
-!data_raw/.gitkeep
-!data_processed/.gitkeep
-!info_pdf/.gitkeepdata_raw/
-data_proc/
-venv/
-__pycache__/
-*.pyc
+# --- KEEP STRUCTURE (The "Exclusions") ---
+# Esto permite que Git vea el archivo .gitkeep aunque la carpeta esté ignorada
+!**/ .gitkeep

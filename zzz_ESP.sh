@@ -13,5 +13,13 @@ goes-processor planning check-plan-download --sat-position east  --product ALL -
 # G19 - east - ABI-L2-LSTF
 goes-processor planning gen-plan-download   --sat-position east  --product ABI-L2-LSTF --year 2026 --day 003  --overwrite True --check-local True
 goes-processor planning check-plan-download --sat-position east  --product ABI-L2-LSTF --year 2026 --day 003 
-goes-processor download run-download        --sat-position east  --product ABI-L2-LSTF --year 2026 --day 003 --hour 10 --minute ALL --overwrite False
+goes-processor download run-download-s3 \
+  --sat-position east \
+  --product ABI-L2-LSTF \
+  --year 2026 \
+  --day 003 \
+  --threads 1
+
+
+
 goes-processor planning check-plan-download --sat-position east  --product ABI-L2-LSTF --year 2026 --day 003 
