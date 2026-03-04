@@ -1,35 +1,48 @@
-# Metadata de la Tesis
-__version__ = "0.3.6"
-__last_update__ = "2026-02-22"
+ # Metadata de la Tesis
+ version = "0.7.0"
+ last_update = "2026-03-04"
 
-El proyecto se maneja principalmente a través del comando CLI goes19.
-### 1. Descargar datos
-Descargar una banda específica (ej: banda 02 visible):
-goes19 download --year 2026 --day 043 --hour 12 --product ABI-L1b-RadF --band 02
-Descargar todos los archivos de una hora:
-goes19 download --year 2026 --day 043 --hour 12 --product ABI-L2-LSTF --all
-Descargar un archivo específico por nombre:
-goes19 download --year 2026 --day 043 --hour 12 --product ABI-L1b-RadF 
---file-name OR_ABI-L1b-RadF-M6C02_G19_s20260431200212_e20260431209520_c20260431209573.nc
-Forzar sobreescritura si ya existe:
-goes19 download --year 2026 --day 043 --hour 12 --product ABI-L2-LSTF --overwrite
-Descargar rango de horas (ej: de 11:00 a 13:00):
-goes19 download --year 2026 --day 043 --hour 12 --product ABI-L2-LSTF 
---start-time 2026-02-12_11:00 --end-time 2026-02-12_13:00
-### 2. Ejecutar el scheduler automático
-Para que el sistema descargue y procese automáticamente según los horarios definidos:
-python -m goes19_processor.scheduler
-Esto inicia el planificador en segundo plano.
-Los intervalos actuales incluyen:
-- True Color / bandas visibles: cada 10 minutos
-- LST (temperatura de superficie): cada 1 hora
-- Otros productos: cada 5–60 minutos (configurable en el futuro)
-Para producción, configurarlo como servicio systemd (ver docs/deployment.md).
-### 3. Ver ayuda completa
-goes19 --help
-goes19 download --help
-Los archivos se guardan en data/raw/noaa-goes19/... con estructura organizada por producto/año/día/hora.# goes19-sat-processor
-# goes19-sat-processor
-# goes19-sat-processor
-# MAIE_tesis_github
-# MAIE_tesis_github
+ El proyecto se maneja principalmente a través del comando CLI goes-processor.
+ Esta versión incluye detección automática de satélites (GOES-16/17/18/19) según fecha y posición.
+
+ ## 🛠️ Instalación y Setup
+ bash  source venv/bin/activate  
+ 
+ bash pip install -e . --no-cache-dir  
+
+ ## 🛰️ 1. Ciclo de Descarga por Producto
+ El sistema utiliza un flujo de tres pasos para garantizar la integridad en la Legion.
+
+ ### Caso: Land Surface Temperature (LSTF)
+ bash  
+ 
+ # A. Generar el Plan (Detecta automáticamente GOES-19 para 2026)  
+ goes-processor download gen-plan-download    --sat-position east --product ABI-L2-LSTF --year 2026 --day 003 --overwrite False    
+ 
+ # B. Verificar Disco (Sincroniza lo que ya existe en la Legion)  
+ goes-processor download check-plan-download  --sat-position east --product ABI-L2-LSTF --year 2026 --day 003    
+ 
+ # C. Ejecutar Descarga (Solo descarga faltantes con hilos y reporte de color)  
+ goes-processor download run-plan-download    --sat-position east --product ABI-L2-LSTF --year 2026 --day 003 --overwrite False --threads 4   
+
+
+ ### Caso: Producto Multicanal (MCMIPF)
+ bash  
+ goes-processor download gen-plan-download    --sat-position east --product ABI-L2-MCMIPF --year 2026 --day 003 --overwrite False  
+ goes-processor download check-plan-download  --sat-position east --product ABI-L2-MCMIPF --year 2026 --day 003  
+ goes-processor download run-plan-download    --sat-position east --product ABI-L2-MCMIPF --year 2026 --day 003 --overwrite False --threads 4   
+
+ ## 📦 2. Ejecución Masiva (ALL Products)
+ Si deseas procesar todos los productos configurados para un día específico:
+ bash  
+ goes-processor download gen-plan-download    --sat-position east --product ALL --year 2026 --day 003 --overwrite False  
+ goes-processor download check-plan-download  --sat-position east --product ALL --year 2026 --day 003  
+ goes-processor download run-plan-download    --sat-position east --product ALL --year 2026 --day 003 --overwrite False --threads 8  
+
+ ## 🧠 3. Notas de Implementación
+ - Inteligencia de Satélites: El sistema decide el bucket (noaa-goes16 vs noaa-goes19) consultando el SoT (Source of Truth) interno.
+ - Logs: La Action 03 (run-plan) muestra un reporte de estado tipo 📊 [STATUS] 4320/4320 y usa colores para identificar descargas exitosas.
+ - Estructura de Datos: Los archivos se guardan en data/raw/{bucket}/{product}/{year}/{day}/{hour}/.
+
+ ## 4. Ayuda Completa
+ bash  goes-processor --help  goes-processor download --help 

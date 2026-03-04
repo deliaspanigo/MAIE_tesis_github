@@ -27,3 +27,24 @@ goes-processor planning gen-plan-download   --sat-position east  --product ABI-L
 goes-processor planning gen-plan-download   --sat-position east  --product ABI-L2-LSTF --year 2026 --day 060  --overwrite True --check-local True
 goes-processor download run-download-s3     --sat-position east  --product ABI-L2-LSTF --year 2026 --day 060  --overwrite True --threads 2
 goes-processor planning check-plan-download --sat-position east  --product ABI-L2-LSTF --year 2026 --day 060 
+
+
+
+source venv/bin/activate
+
+pip install -e . --no-cache-dir
+
+
+goes-processor download gen-plan-download    --sat-position east --product ABI-L2-LSTF --year 2026 --day 3 --overwrite False
+goes-processor download check-plan-download  --sat-position east --product ABI-L2-LSTF --year 2026 --day 3
+goes-processor download run-plan-download    --sat-position east --product ABI-L2-LSTF --year 2026 --day 3 --overwrite False --threads 4 
+
+
+goes-processor download gen-plan-download    --sat-position east --product ABI-L2-MCMIPF --year 2026 --day 3 --overwrite False
+goes-processor download check-plan-download  --sat-position east --product ABI-L2-MCMIPF --year 2026 --day 3
+goes-processor download run-plan-download    --sat-position east --product ABI-L2-MCMIPF --year 2026 --day 3 --overwrite False --threads 4 
+
+
+goes-processor download gen-plan-download    --sat-position east --product ALL --year 2026 --day 3 --overwrite False
+goes-processor download check-plan-download  --sat-position east --product ALL --year 2026 --day 3
+goes-processor download run-plan-download    --sat-position east --product ALL --year 2026 --day 3 --overwrite False --threads 4 

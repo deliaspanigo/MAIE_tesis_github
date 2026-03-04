@@ -55,8 +55,8 @@ _PRIVATE_PRODUCTS = {
         "shape_full_disk": (5424, 5424),
         "default_time": {
             "hours": [f"{m:02d}" for m in range(0, 24, 1)],
-            "minutes": None,
-            "seconds": None
+            "minutes": [""],
+            "seconds": [""]
         }
     },
     "ABI-L2-MCMIPF": {
@@ -69,16 +69,16 @@ _PRIVATE_PRODUCTS = {
         "main_use": "General forecasting and imagery",
         "notes": "Full Disk, contains all ABI bands",
         "total_files_one_day": 144,
-        "time_lapse": "01hour",
+        "time_lapse": "10minutes",
         "time_lapse_label": "time_lapse_01hour",
         "type": "raster",
-        "cadence_full_disk": "1 hour",
+        "cadence_full_disk": "10 minutes",
         "resolution_nominal": "2 km",
         "shape_full_disk": (5424, 5424),
         "default_time": {
             "hours": [f"{m:02d}" for m in range(0, 24, 1)], 
             "minutes": [f"{m:02d}" for m in range(0, 60, 10)], 
-            "seconds": None
+            "seconds": [""]
         }
     },
     "ABI-L2-FDCF": {
@@ -91,16 +91,16 @@ _PRIVATE_PRODUCTS = {
         "main_use": "Wildfire detection and monitoring",
         "notes": "Includes Fire Temperature, Area, and Power (FRP).",
         "total_files_one_day": 144,
-        "time_lapse": "01hour",
+        "time_lapse": "10minutes",
         "time_lapse_label": "time_lapse_01hour",
         "type": "raster",
-        "cadence_full_disk": "1 hour",
+        "cadence_full_disk": "10 minutes",
         "resolution_nominal": "2 km",
         "shape_full_disk": (5424, 5424),
         "default_time": {
             "hours": [f"{m:02d}" for m in range(0, 24, 1)], 
             "minutes": [f"{m:02d}" for m in range(0, 60, 10)], 
-            "seconds": None
+            "seconds": [""]
         }
     },
     "GLM-L2-LCFA": {

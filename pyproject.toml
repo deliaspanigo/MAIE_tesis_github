@@ -1,33 +1,33 @@
 [project]
 name = "goes-processor"
-version = "0.1.0"
-description = "Procesador de imágenes del satélite GOES-19 usando Satpy"
+version = "0.1.9"
+description = "Procesador de imágenes del satélite GOES-16/17/18/19 para Tesis MAIE 2026"
 readme = "README.md"
 requires-python = ">=3.12"
 license = {text = "MIT"}
 authors = [
-    {name = "Tu Nombre", email = "tu.email@ejemplo.com"},
+    {name = "Legion User", email = "tu.email@ejemplo.com"},
 ]
-keywords = ["goes","goes-19", "satpy", "satelite", "procesamiento-imagenes", "meteorologia"]
+keywords = ["goes", "goes-19", "satpy", "s3", "meteorologia", "remotesensing"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Atmospheric Science",
 ]
 
 dependencies = [
-    "boto3",                        # Descarga desde AWS
-    "click",                        # CLI
-    "pyyaml",                       # Configuración
-    "tqdm",                         # Barra de progreso
-    "fsspec",                       # Sistema de archivos S3
-    "s3fs>=2024.12.0",                         # S3 filesystem
-    "apscheduler",                  # Scheduler automático
-    # NO pongas aquí satpy, rasterio, geopandas, cartopy, matplotlib, numpy
-    # Esas se instalan con conda o manualmente
+    "click>=8.1.0",           # Interfaz de línea de comandos (CLI)
+    "s3fs>=2024.12.0",        # Conexión eficiente con AWS S3
+    "fsspec>=2024.12.0",       # Especificación de sistema de archivos
+    "boto3>=1.34.0",          # SDK oficial de AWS
+    "pyyaml>=6.0.1",          # Manejo de archivos de configuración
+    "tqdm>=4.66.0",           # Barras de progreso para descargas
+    "apscheduler>=3.10.0",    # Programación de tareas automáticas
+    "xarray>=2024.1.0",       # Manejo de cubos de datos NetCDF (Task 03)
+    "netCDF4>=1.6.5",         # Motor de lectura para archivos .nc
 ]
 
 [project.optional-dependencies]
@@ -36,8 +36,10 @@ dev = [
     "black",
     "pytest",
     "pytest-cov",
+    "ipykernel",              # Para usar el venv en tus Notebooks
 ]
 
+# --- ENTRY POINTS: Aquí es donde ocurre la magia del comando ---
 [project.scripts]
 goes-processor = "goes_processor.main:cli"
 
@@ -45,11 +47,16 @@ goes-processor = "goes_processor.main:cli"
 requires = ["hatchling>=1.26.0"]
 build-backend = "hatchling.build"
 
+# --- CONFIGURACIÓN DE ESTRUCTURA SRC ---
 [tool.hatch.build.targets.wheel]
 packages = ["src/goes_processor"]
 
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
+
+# --- CONFIGURACIÓN DE RUFF (LINTER) ---
 [tool.ruff]
 line-length = 88
 target-version = "py312"
 select = ["E", "F", "W", "I", "PL", "UP", "B", "C4"]
-ignore = ["E501"]
+ignore = ["E501"] # Ignorar líneas demasiado largas que Ruff no puede romper
