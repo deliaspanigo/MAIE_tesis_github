@@ -1,0 +1,64 @@
+[project]
+name = "legion-goes"
+version = "0.1.9"
+description = "GOES-16/17/18/19 satellite image processor for MAIE Thesis 2026"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+    {name = "David  Elias Panigo", email = "d.eliaspanigo@gmail.com"},
+]
+keywords = ["goes", "goes-19", "satpy", "s3", "meteorologia", "remotesensing", "legion"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+
+dependencies = [
+    "click>=8.1.0",           # Command Line Interface (CLI)
+    "psutil>=5.9.0",          # System diagnostics (RAM/Disk) - Added for Task 01
+    "s3fs>=2024.12.0",        # AWS S3 efficient connection
+    "fsspec>=2024.12.0",       # File system specification
+    "boto3>=1.34.0",          # Official AWS SDK
+    "pyyaml>=6.0.1",          # Config file management
+    "tqdm>=4.66.0",           # Progress bars for downloads
+    "apscheduler>=3.10.0",    # Task scheduling
+    "xarray>=2024.1.0",       # NetCDF data cubes (Task 03)
+    "netCDF4>=1.6.5",         # Engine for .nc files
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "black",
+    "pytest",
+    "pytest-cov",
+    "ipykernel",              # For Notebooks in venv
+]
+
+# --- ENTRY POINTS: Command name in UPPERCASE for legibility ---
+[project.scripts]
+LEGION-GOES = "legion_goes.main:cli"
+
+[build-system]
+requires = ["hatchling>=1.26.0"]
+build-backend = "hatchling.build"
+
+# --- SRC STRUCTURE CONFIGURATION ---
+[tool.hatch.build.targets.wheel]
+packages = ["src/legion_goes"]
+
+# Maps 'src/legion_goes' folder to 'legion_goes' package
+[tool.hatch.build.targets.wheel.sources]
+"src/legion_goes" = "legion_goes"
+
+# --- RUFF CONFIGURATION ---
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+select = ["E", "F", "W", "I", "PL", "UP", "B", "C4"]
+ignore = ["E501"]

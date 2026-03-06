@@ -1,0 +1,69 @@
+# =============================================================
+# MAIE_tesis_github - GITIGNORE (v.0.0.1)
+# =============================================================
+
+# --- Python & Env ---
+venv/
+__pycache__/
+*.py[cod]
+.env
+*.egg-info/
+dist/
+build/
+
+# --- Heavy Data & Cache (Raíz y src) ---
+data_plan/
+data_raw/
+data_proc/
+data_processed/
+f02_processed/
+pruebas_goes/
+src/legion_goes/satpy_cache/
+notebooks/resample_cache/
+**/__pycache__/
+
+# --- Heavy File Extensions (Safety Net) ---
+# Bloqueamos archivos de datos pesados en cualquier subcarpeta
+*.nc
+*.nc.tmp
+*.tif
+*.tiff
+*.nc4
+*.h5
+
+# --- Media & Docs (Excluyendo assets del README) ---
+*.pdf
+*.mp4
+*.zip
+*.tar.gz
+# Si quieres subir capturas para el README, guárdalas en una carpeta 'docs/img' 
+# y descomenta la siguiente línea:
+# !docs/img/*.png
+
+# --- Notebooks & Config ---
+.ipynb_checkpoints/
+# Ignoramos archivos temporales pero PERMITIMOS las notebooks de trabajo
+!*.ipynb
+
+# --- Logs ---
+logs/
+reports/logs/
+*.log
+
+# --- Archivos de desarrollo personal ---
+Aasdasd-1.ipynb
+requirements_*.txt
+!requirements_v0.0.1.txt
+zzz_*
+
+
+
+
+# Bloquear datos dentro de tests
+tests/**/data/
+*.nc.tmp
+*.nc
+
+# Bloquear notebooks específicas si son muy pesadas
+notebooks02/collage_maps/collage_maps.ipynb
+
