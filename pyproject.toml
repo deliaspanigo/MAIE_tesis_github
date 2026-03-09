@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = {text = "MIT"}
 authors = [
-    {name = "David  Elias Panigo", email = "d.eliaspanigo@gmail.com"},
+    {name = "David Elias Panigo", email = "d.eliaspanigo@gmail.com"},
 ]
 keywords = ["goes", "goes-19", "satpy", "s3", "meteorologia", "remotesensing", "legion"]
 classifiers = [
@@ -17,30 +17,26 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Atmospheric Science",
 ]
-
 dependencies = [
-    "click>=8.1.0",           # Command Line Interface (CLI)
-    "psutil>=5.9.0",          # System diagnostics (RAM/Disk) - Added for Task 01
-    "s3fs>=2024.12.0",        # AWS S3 efficient connection
-    "fsspec>=2024.12.0",       # File system specification
-    "boto3>=1.34.0",          # Official AWS SDK
-    "pyyaml>=6.0.1",          # Config file management
-    "tqdm>=4.66.0",           # Progress bars for downloads
-    "apscheduler>=3.10.0",    # Task scheduling
-    "xarray>=2024.1.0",       # NetCDF data cubes (Task 03)
-    "netCDF4>=1.6.5",         # Engine for .nc files
+    "click>=8.1.0",
+    "psutil>=5.9.0",
+    "s3fs>=2024.12.0",
+    "fsspec>=2024.12.0",
+    "boto3>=1.34.0",
+    "pyyaml>=6.0.1",
+    "tqdm>=4.66.0",
+    "apscheduler>=3.10.0",
+    "xarray>=2024.1.0",
+    "netCDF4>=1.6.5",
 ]
-
 [project.optional-dependencies]
 dev = [
     "ruff",
     "black",
     "pytest",
     "pytest-cov",
-    "ipykernel",              # For Notebooks in venv
+    "ipykernel",
 ]
-
-# --- ENTRY POINTS: Command name in UPPERCASE for legibility ---
 [project.scripts]
 LEGION-GOES = "legion_goes.main:cli"
 
@@ -50,13 +46,19 @@ build-backend = "hatchling.build"
 
 # --- SRC STRUCTURE CONFIGURATION ---
 [tool.hatch.build.targets.wheel]
-packages = ["src/legion_goes"]
+packages = ["legion_goes"]  # ← Apunta directamente a legion_goes/ (sin src/)
 
-# Maps 'src/legion_goes' folder to 'legion_goes' package
 [tool.hatch.build.targets.wheel.sources]
-"src/legion_goes" = "legion_goes"
+"legion_goes" = "legion_goes"  # ← Mapea legion_goes/ a legion_goes/ en el paquete
 
-# --- RUFF CONFIGURATION ---
+[tool.hatch.build.targets.sdist]
+include = [
+    "/legion_goes",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
 [tool.ruff]
 line-length = 88
 target-version = "py312"
