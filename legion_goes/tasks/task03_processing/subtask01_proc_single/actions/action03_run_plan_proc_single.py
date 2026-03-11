@@ -27,6 +27,12 @@ except ImportError:
 # 1. CARGADOR DINÁMICO DE MÓDULOS (Aisla entornos de FNP)
 # =============================================================================
 
+def run_action(sat_id="16", product_id="ABI-L2-MCMIPF", year=None, day=None, fnp_tag="fnp01", overwrite=False, nc_path=None):
+
+    run_executor_proc_single(sat_id="16", product_id="ABI-L2-MCMIPF", year=None, day=None, fnp_tag="fnp01", overwrite=False, nc_path=None)
+
+
+
 def load_fnp_module(fnp_folder_name, module_filename):
     """
     Carga fn01/fn02 inyectando su carpeta en sys.path para que los imports 

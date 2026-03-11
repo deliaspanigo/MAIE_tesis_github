@@ -13,9 +13,11 @@ from botocore import UNSIGNED
 from botocore.config import Config
 
 # --- ABSOLUTE IMPORTS ---
-from legion_goes.tasks.task02_download.actions.fn_utils.load_dict_plan_file_json import load_dict_plan_file_json
-from legion_goes.tasks.task02_download.actions.fn_utils.save_dict_plan_json import save_dict_plan_json
-from legion_goes.tasks.task02_download.actions.fn_utils.generate_plan_download_file_path import generate_plan_download_file_path
+from legion_goes.code.python_sp.f99_common.load_dict_plan_from_json_file import load_dict_plan_from_json_file
+from legion_goes.code.python_sp.f99_common.save_dict_plan_as_json_file import save_dict_plan_as_json_file
+from legion_goes.code.python_sp.f01_donwload.utils.generate_plan_download_json_file_path import generate_plan_download_json_file_path
+
+
 from legion_goes.tasks.task02_download.actions.fn_act02.step02_update_dict_parts.update_dict03_inventory import update_one_item_inventory_download
 from legion_goes.tasks.task02_download.actions.fn_act02.update_dict_plan_download import update_dict_plan_download
 
@@ -80,13 +82,13 @@ def run_action(sat_id, product_id, year, day, threads=4, checkpoint_n=10):
     
     
     # 1. File path
-    path_json = generate_plan_download_file_path(sat_id=sat_id, product_id=product_id, year=year, day=day)
+    path_json = generate_plan_download_json_file_path(sat_id=sat_id, product_id=product_id, year=year, day=day)
     
     # 2. Check if file json exists,
     # Verifica si el archivo existe localmente...
      
     # 3. Import json.
-    plan_data = load_dict_plan_file_json(path_json=str(path_json))
+    plan_data = load_dict_plan_from_json_file(path_json=str(path_json))
     if not plan_data: 
         print(f"❌ Error: Could not load plan at {path_json}")
         return False
@@ -166,7 +168,7 @@ def run_action(sat_id, product_id, year, day, threads=4, checkpoint_n=10):
                     checkpoint_counter = 0
 
     # Final save
-    save_dict_plan_json(dict_plan=plan_data, path_json=str(path_json))
+    save_dict_plan_as_json_file(dict_plan=plan_data, path_json=str(path_json))
     print("="*120 + "\n✅ Download process finished.")
     return True
 

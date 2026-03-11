@@ -5,10 +5,10 @@
 import os
 import json  
 
-from legion_goes.tasks.task02_download.actions.fn_act01.step02_dict_parts.generate_dict01_self_info import generate_dict as generate_dict01_self_info
-from legion_goes.tasks.task02_download.actions.fn_act01.step02_dict_parts.generate_dict02_sat_prod_info import generate_dict as generate_dict02_sat_prod_info
-from legion_goes.tasks.task02_download.actions.fn_act01.step02_dict_parts.generate_dict03_dict_inventory import generate_dict as generate_dict03_dict_inventory
-from legion_goes.tasks.task02_download.actions.fn_act01.step02_dict_parts.generate_dict04_summary import generate_dict as generate_dict04_summary
+from legion_goes.tasks.task02_download.actions.fn_act01.utils.generate_dict01_self_info     import generate_dict as generate_dict01_self_info
+from legion_goes.tasks.task02_download.actions.fn_act01.utils.generate_dict02_sat_prod_info import generate_dict as generate_dict02_sat_prod_info
+from legion_goes.tasks.task02_download.actions.fn_act01.utils.generate_dict03_inventory     import generate_dict as generate_dict03_inventory
+from legion_goes.tasks.task02_download.actions.fn_act01.utils.generate_dict04_summary       import generate_dict as generate_dict04_summary
 
 ########################################################################################
 def generate_dict_plan_download(sat_id: str, product_id: str, year: str, day: str) -> dict:
@@ -17,14 +17,14 @@ def generate_dict_plan_download(sat_id: str, product_id: str, year: str, day: st
   
     dict01_self_info = generate_dict01_self_info(sat_id=sat_id, product_id=product_id, year=year, day=day)
     dict02_sat_prod_info = generate_dict02_sat_prod_info(sat_id=sat_id, product_id=product_id, year=year, day=day)
-    dict03_dict_inventory = generate_dict03_dict_inventory(sat_id=sat_id, product_id=product_id, year=year, day=day)
-    dict04_summary = generate_dict04_summary(dict_inventory = dict03_dict_inventory)
+    dict03_inventory = generate_dict03_inventory(sat_id=sat_id, product_id=product_id, year=year, day=day)
+    dict04_summary = generate_dict04_summary(dict_inventory = dict03_inventory)
   
     
     dict_plan_download = {
         "self_info": dict01_self_info,
         "sat_prod_info": dict02_sat_prod_info,
-        "inventory": dict03_dict_inventory,
+        "inventory": dict03_inventory,
         "summary": dict04_summary
     }
   
