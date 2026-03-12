@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 # --- IMPORT CORREGIDO ---
-from legion_goes.tasks.task03_processing.subtask01_proc_single.actions.fn_utils.generate_plan_proc_single_file_path import generate_plan_proc_single_file_path
+from legion_goes.code.python_sp.f02_processing.sp001_single.utils.generate_plan_proc_single_json_file_path import generate_plan_proc_single_json_file_path
 
 def generate_dict(sat_id: str, product_id: str, year: str, day: str, fnp_tag: str) -> dict:
     """Generates metadata about the Processing Plan file itself."""
@@ -14,7 +14,7 @@ def generate_dict(sat_id: str, product_id: str, year: str, day: str, fnp_tag: st
     time_now_format = time_now.strftime("%Y-%m-%d %H:%M:%S")
   
     # Usamos la utilidad de Task 03 para resolver la ruta del JSON de proceso
-    file_path = generate_plan_proc_single_file_path(
+    file_path = generate_plan_proc_single_json_file_path(
         sat_id=sat_id,
         product_id=product_id,
         year=year,

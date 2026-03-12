@@ -1,5 +1,5 @@
 """
-Path: src/legion_goes/task/task03_processing/subtask01_proc_single/actions/fnp/ABI_L2_MCMIPF_SP_single_fnp02/fn01_python_code.py
+Path: legion_goes/code/python_sp/f02_processing/sp001_single/f01_product_proc/ABI_L2_MCMIPF/fnp02/fn01_python_code.py
 Version: 1.8.7
 Description: FNP02 - Colorized Infrared (IR) Processing with transparency and **kwargs.
 """

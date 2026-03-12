@@ -7,7 +7,7 @@ Description: Runs the core processing function and handles gallery generation.
 from pathlib import Path
 
 # --- UTILITY IMPORTS ---
-from legion_goes.code.python_sp.sp001_single.f02_executor.utils.generate_fnp_preview_strip_gallery import generate_fnp_preview_strip_gallery
+from legion_goes.code.python_sp.f02_processing.sp001_single.f02_executor.utils.generate_fnp_preview_strip_gallery import generate_fnp_preview_strip_gallery
 
 def STEP03_run_fnp(fnp_func, input_nc, dict_outputs, overwrite):
     """

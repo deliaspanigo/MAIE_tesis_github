@@ -1,81 +1,81 @@
 # =============================================================================
-# FILE PATH: legion_goes/tasks/task02_download/actions/fn_act01/step02_dict_parts/generate_dict04_summary.py
-# Version: 1.7.0 (Dual Path Logic: Plan vs Raw Data)
+# FILE PATH: legion_goes/tasks/task03_processing/subtask01_proc_single/actions/fn_action01/step02_dict_parts/generate_dict04_summary.py
+# Version: 1.8.0 (Adapted for Processing Task 03)
 # =============================================================================
 import os
 from pathlib import Path
 from datetime import datetime
 
-def generate_dict(dict_inventory: dict) -> dict:
+def generate_dict(dict_proc_inventory: dict) -> dict:
     """
-    Generates a summary dictionary from the inventory.
+    Generates a summary for the Processing Plan, calculating progress based 
+    on the status of the inventory generated in step 03.
     """
-    total_files = len(dict_inventory)
+    total_files = len(dict_proc_inventory)
     
-    if not dict_inventory:
-        raise ValueError("Inventory is empty")
+    if total_files == 0:
+        raise ValueError("Processing Inventory is empty")
     
-    # Toma la PRIMERA clave que exista (no asume que es 1)
-    first_key = next(iter(dict_inventory))  # Primera clave disponible
-    the_first = dict_inventory[first_key]
+    # 1. Calculate Statistics
+    # We check the 'is_done' status of each record in the proc_inventory
+    files_processed = sum(1 for item in dict_proc_inventory.values() if item["status"]["is_done"])
+    progress_pct = round((files_processed / total_files) * 100, 2) if total_files > 0 else 0
     
-    # Convert strings to Path objects
-    rel_path = Path(the_first["folder_local"]["path_relative"])
-    abs_path = Path(the_first["folder_local"]["path_absolute"])
+    # 2. Extract Root Output Folder
+    # We take the parent of the first file's output folder to get the day-level root
+    first_key = next(iter(dict_proc_inventory))
+    sample_output_folder = Path(dict_proc_inventory[first_key]["output_ref"]["output_folder"])
     
-    # Parent folders (remove last subfolder)
-    folder_path_hour_rel = rel_path.parent
-    folder_path_hour_abs = abs_path.parent
+    # Usually: .../product/year/day/hour/fnp_tag -> we want the day or product root
+    # For summary purposes, the absolute path of the first entry's parent is useful
+    root_output_abs = sample_output_folder.parent.parent # Returns the 'day' level
     
-    # Current timestamp
+    # 3. Current timestamp
     time_now = datetime.now()
     time_now_format = time_now.strftime("%Y-%m-%d %H:%M:%S")
     
     the_dict = {
-        "is_done": False,
-        "expected_total_files": total_files,
-        "local_total_files": None,
-        "output_folder_year_day_relative": str(folder_path_hour_rel),
-        "output_folder_year_day_absolute": str(folder_path_hour_abs),
-        "summary_timestamp": time_now_format,
-        "total_files_processed": None,
-        "progress_percentage": None
+        "is_all_done": files_processed == total_files,
+        "total_files_in_plan": total_files,
+        "total_files_already_processed": files_processed,
+        "progress_percentage": f"{progress_pct}%",
+        "root_output_directory": str(root_output_abs),
+        "last_summary_update": time_now_format,
+        "execution_tag": "v.0.0.1"
     }
+    
     return the_dict
 
 # ===================================================================
-# MAIN EXECUTION - Simple example
+# MAIN EXECUTION - Diagnostic
 # ===================================================================
 if __name__ == "__main__":
-    print("\n" + " LEGION GOES: GENERATE SUMMARY DICT04 EXAMPLE ".center(80, "="))
-    print("Quick test of generate_dict04_summary...\n")
+    print("\n" + " LEGION GOES: GENERATE PROCESSING SUMMARY ".center(80, "="))
 
-    # Minimal fake inventory to test (only 1 entry needed)
-    example_inventory = {
-        1: {
-            "folder_local": {
-                "path_relative": "noaa-goes19/ABI-L2-MCMIPF/2026/100/000000",
-                "path_absolute": "/home/user/data_raw/noaa-goes19/ABI-L2-MCMIPF/2026/100/000000"
-            }
-            # ... other fields not needed for this test
+    # Fake inventory based on your Dict 03 structure
+    mock_inventory = {
+        "proc_single_001": {
+            "status": {"is_done": True},
+            "output_ref": {"output_folder": "/data/proc/ABI/2026/070/00/fnp01"}
+        },
+        "proc_single_002": {
+            "status": {"is_done": False},
+            "output_ref": {"output_folder": "/data/proc/ABI/2026/070/01/fnp01"}
         }
     }
 
     try:
-        summary_dict = generate_dict(example_inventory)
+        summary = generate_dict(mock_inventory)
         
-        print("Input inventory (first entry):")
-        print(f"   Relative path: {example_inventory[1]['folder_local']['path_relative']}")
-        print(f"   Absolute path: {example_inventory[1]['folder_local']['path_absolute']}")
+        print(f"📊 Progress: {summary['progress_percentage']}")
+        print(f"📁 Root:     {summary['root_output_directory']}")
+        print(f"✅ Done:     {summary['is_all_done']}")
         
-        print("\nGenerated summary dict:")
-        for key, value in summary_dict.items():
-            print(f"   {key}: {value}")
-        
-        print("\nDone.")
-    
+        print("\nFull Summary Dictionary:")
+        for k, v in summary.items():
+            print(f"   {k:<30}: {v}")
+            
     except Exception as e:
-        print(f"\n❌ Error generating summary dict:")
-        print(f"   {e}")
+        print(f"❌ Error: {e}")
 
     print("=" * 80 + "\n")

@@ -23,7 +23,7 @@ def get_elements_from_FNP(product_id, fnp_tag, list_expected):
     prod_id_mod = product_id.upper().replace('-', '_')
     
     # Construimos el path absoluto de importación
-    module_path = f"legion_goes.code.python_sp.sp001_single.f01_product_proc.{prod_id_mod}.{fnp_tag}.fn01_python_code"
+    module_path = f"legion_goes.code.python_sp.f02_processing.sp001_single.f01_product_proc.{prod_id_mod}.{fnp_tag}.fn01_python_code"
 
     try:
         # Si el módulo ya fue cargado previamente, lo recargamos para asegurar frescura (útil en loops largos)
