@@ -55,21 +55,13 @@ if __name__ == "__main__":
 
     # Example with typical values you use
     sat_id = "19"                  # GOES-19
-    product_id = "ABI-L2-MCMIPF"   # Common product
+    product_id = "ABI-L2-LSTF"   # Common product
     year = "2026"
-    day = "100"                    # Day 100 of the year
+    day = "003"                    # Day 100 of the year
 
     try:
         metadata = generate_dict(sat_id, product_id, year, day)
         
-        print(f"Satellite: {metadata['satellite']}")
-        print(f"Product: {metadata['product_id']}")
-        print(f"Position: {metadata['position']}")
-        print(f"Date (Julian): {metadata['date_julian']}")
-        print(f"Date (Gregorian): {metadata['date_gregorian']}")
-        print(f"Bucket: {metadata['bucket']}")
-        print(f"Cadence: {metadata['cadence']}")
-        print("\nFull metadata:")
         for key, value in metadata.items():
             print(f"   {key}: {value}")
         print("\nDone.")

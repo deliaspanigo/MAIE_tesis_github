@@ -25,10 +25,11 @@ def generate_dict(sat_id: str, product_id: str,  year: str, day: str) -> dict:
     
     return {
         "description": "Download Plan for 1 day, for 1 specific product.",
-        "version_github": "v.0.0.1",
+        "task": "Download",
+        "product_id": product_id,
         "file_name": str(file_obj.name),            # Filename as string
         "path_absolute": str(file_obj.resolve()),    # Absolute path as string
-        "created_at_local": time_now_format
+        "creation_time": time_now_format
     }
 
 # ===================================================================
@@ -40,9 +41,9 @@ if __name__ == "__main__":
 
     # Example with typical values you use
     sat_id = "19"                  # GOES-19
-    product_id = "ABI-L2-MCMIPF"   # Common product
+    product_id = "ABI-L2-LSTF"   # Common product
     year = "2026"
-    day = "100"                    # Day 100 of the year
+    day = "003"                    # Day 100 of the year
 
     
     try:

@@ -1,81 +1,83 @@
-# =============================================================================
-# FILE PATH: legion_goes/tasks/task02_download/actions/fn_act01/step02_dict_parts/generate_dict04_summary.py
-# Version: 1.7.0 (Dual Path Logic: Plan vs Raw Data)
-# =============================================================================
-import os
+"""
+Path: legion_goes/tasks/task02_download/actions/fn_act01/step02_dict_parts/generate_dict04_summary.py
+Version: 1.8.2
+Description: Refactored to map from definition -> local_folder_info -> hard.
+"""
+import json
 from pathlib import Path
 from datetime import datetime
 
 def generate_dict(dict_inventory: dict) -> dict:
     """
-    Generates a summary dictionary from the inventory.
+    Generates a summary dictionary from the inventory using the 
+    hardcoded paths in the new definition structure.
     """
-    total_files = len(dict_inventory)
-    
     if not dict_inventory:
         raise ValueError("Inventory is empty")
+
+    total_files = len(dict_inventory)
     
-    # Toma la PRIMERA clave que exista (no asume que es 1)
-    first_key = next(iter(dict_inventory))  # Primera clave disponible
+    # 1. Acceso a la primera entrada para extraer metadatos de ruta
+    first_key = next(iter(dict_inventory))
     the_first = dict_inventory[first_key]
     
-    # Convert strings to Path objects
-    rel_path = Path(the_first["folder_local"]["path_relative"])
-    abs_path = Path(the_first["folder_local"]["path_absolute"])
+    # 2. ACCESO ACTUALIZADO v.1.8.2: definition -> local_folder_info -> hard
+    local_hard = the_first.get("definition", {}).get("local_folder_info", {}).get("hard", {})
+    rel_path_str = local_hard.get("folder_path_relative")
+    abs_path_str = local_hard.get("folder_path_absolute")
     
-    # Parent folders (remove last subfolder)
-    folder_path_hour_rel = rel_path.parent
-    folder_path_hour_abs = abs_path.parent
     
-    # Current timestamp
-    time_now = datetime.now()
-    time_now_format = time_now.strftime("%Y-%m-%d %H:%M:%S")
+    if not rel_path_str or not abs_path_str:
+        raise KeyError(f"Missing 'hard' path info in definition for key: {first_key}")
+
+    rel_path = Path(rel_path_str)
+    abs_path = Path(abs_path_str)
     
+    # Subimos un nivel: de la carpeta de la hora (00, 01...) a la carpeta del día
+    folder_path_day_rel = rel_path.parent
+    folder_path_day_abs = abs_path.parent
+    
+    # Timestamp de generación
+    time_now_format = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # 3. Construcción del summary
     the_dict = {
-        "is_done": False,
-        "expected_total_files": total_files,
-        "local_total_files": None,
-        "output_folder_year_day_relative": str(folder_path_hour_rel),
-        "output_folder_year_day_absolute": str(folder_path_hour_abs),
-        "summary_timestamp": time_now_format,
-        "total_files_processed": None,
-        "progress_percentage": None
+        "hard": {
+            "expected_total_files": total_files,
+            "output_folder_day_relative": str(folder_path_day_rel),
+            "output_folder_day_absolute": str(folder_path_day_abs),
+
+        },
+        "soft": {
+            "is_done_day": None,
+            "local_total_files": None,
+            "time_last_mod": time_now_format,
+            "status_tag": "INITIALIZED"
+        }
     }
+    
     return the_dict
 
 # ===================================================================
-# MAIN EXECUTION - Simple example
+# MAIN EXECUTION (Solo el Diccionario Completo)
 # ===================================================================
 if __name__ == "__main__":
-    print("\n" + " LEGION GOES: GENERATE SUMMARY DICT04 EXAMPLE ".center(80, "="))
-    print("Quick test of generate_dict04_summary...\n")
-
-    # Minimal fake inventory to test (only 1 entry needed)
+    # Simulación de inventario v.1.8.2
     example_inventory = {
-        1: {
-            "folder_local": {
-                "path_relative": "noaa-goes19/ABI-L2-MCMIPF/2026/100/000000",
-                "path_absolute": "/home/user/data_raw/noaa-goes19/ABI-L2-MCMIPF/2026/100/000000"
+        "file001": {
+            "definition": {
+                "local_folder_info": {
+                    "hard": {
+                        "folder_path_relative": "noaa-goes19/ABI-L2-LSTF/2026/003/00",
+                        "folder_path_absolute": "/home/legion/bulk/data_raw/noaa-goes19/ABI-L2-LSTF/2026/003/00"
+                    }
+                }
             }
-            # ... other fields not needed for this test
         }
     }
 
     try:
-        summary_dict = generate_dict(example_inventory)
-        
-        print("Input inventory (first entry):")
-        print(f"   Relative path: {example_inventory[1]['folder_local']['path_relative']}")
-        print(f"   Absolute path: {example_inventory[1]['folder_local']['path_absolute']}")
-        
-        print("\nGenerated summary dict:")
-        for key, value in summary_dict.items():
-            print(f"   {key}: {value}")
-        
-        print("\nDone.")
-    
+        summary = generate_dict(example_inventory)
+        print(json.dumps(summary, indent=4))
     except Exception as e:
-        print(f"\n❌ Error generating summary dict:")
-        print(f"   {e}")
-
-    print("=" * 80 + "\n")
+        print(json.dumps({"error": str(e)}, indent=4))

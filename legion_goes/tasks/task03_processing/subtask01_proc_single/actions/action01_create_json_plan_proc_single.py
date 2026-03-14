@@ -1,33 +1,35 @@
 # =============================================================================
 # FILE PATH: legion_goes/tasks/task03_processing/subtask01_proc_single/actions/action01_create_json_plan_proc_single.py
-# Version: 1.9.0 (English Version - Explicit 4-Case Matrix)
+# Version: 1.9.2 (Fixed Parameter Sync & Double-Save Conflict)
 # =============================================================================
 import os
 from pathlib import Path
 
 # --- ABSOLUTE IMPORTS ---
-from legion_goes.tasks.task02_download.actions.fn_utils.generate_plan_download_file_path import generate_plan_download_file_path
-from legion_goes.tasks.task02_download.actions.fn_utils.save_dict_plan_json import save_dict_plan_json
-from legion_goes.tasks.task02_download.actions.fn_act01.generate_dict_plan_download import generate_dict_plan_download
+from legion_goes.code.python_sp.f02_processing.sp001_single.utils.generate_plan_proc_single_json_file_path import generate_plan_proc_single_json_file_path
+from legion_goes.tasks.task03_processing.subtask01_proc_single.actions.fn_action01.generate_dict_plan_proc_single import generate_dict_plan_proc_single
 
 def run_action(
     sat_id: str,
     product_id: str,
     year: str,
     day: str,
+    fnp_tag: str, 
     overwrite_json_plan: bool = False
 ):
     """
-    Orchestrates Action 01 using an explicit 2x2 logic matrix.
+    Orchestrates Action 01. 
+    Logic: Check existence -> Handle Overwrite -> Generate & Save.
     """
-    ctx = "[Action01 - Create Plan Download json]"
+    ctx = "[Action01 - Create Processing Plan JSON]"
     
-    # 1. Resolve expected plan path
-    path_plan_expected = generate_plan_download_file_path(
+    # 1. Resolve expected plan path using the official utility
+    path_plan_expected = generate_plan_proc_single_json_file_path(
         sat_id=sat_id, 
         product_id=product_id, 
         year=year, 
-        day=day
+        day=day,
+        fnp_tag=fnp_tag
     )
     
     file_exists = path_plan_expected.exists()
@@ -35,25 +37,21 @@ def run_action(
     print(f"\n{'='*80}")
     print(f"🚀 {ctx}".center(80))
     print(f"{'='*80}")
-    print(f"📂 INFO: [satallite: G{sat_id}] | [product: {product_id}] | [year: {year}] | [day: {day}]")
-    print(f"📂 TARGET PATH: {path_plan_expected}")
-    print(f"📂 DETAILS: [file_exists: {file_exists}] | [overwrite_json_plan: {overwrite_json_plan}]")
+    print(f"📂 INFO: [satellite: G{sat_id}] | [product: {product_id}] | [year: {year}] | [day: {day}] | [tag: {fnp_tag}]")
+    print(f"📂 TARGET: {path_plan_expected}")
+    print(f"📂 DETAILS: [exists: {file_exists}] | [overwrite: {overwrite_json_plan}]")
     print(f"{'-'*80}")
 
     # --- LOGIC MATRIX ---
 
-    # CASE 1 (0/0) & CASE 2 (0/1): File does not exist
-    if not file_exists:
-        print(f"✨ STATUS: Plan does not exist. Proceeding with generation...")
-
-    # CASE 3 (1/0): File exists and we DON'T want to overwrite
-    elif file_exists and not overwrite_json_plan:
-        print(f"⚠️  STATUS: Plan already exists. [OVERWRITE=FALSE]. Skipping creation.")
+    # Si ya existe y NO queremos sobrescribir, salimos felices
+    if file_exists and not overwrite_json_plan:
+        print(f"⚠️  STATUS: Plan already exists. [OVERWRITE=FALSE]. Skipping.")
         return True
 
-    # CASE 4 (1/1): File exists and we DO want to overwrite
-    elif file_exists and overwrite_json_plan:
-        print(f"🔥 STATUS: Plan exists and [OVERWRITE=TRUE]. Deleting old file...")
+    # Si existe y SI queremos sobrescribir, borramos el viejo para evitar colisiones
+    if file_exists and overwrite_json_plan:
+        print(f"🔥 STATUS: Overwrite enabled. Deleting old file...")
         try:
             path_plan_expected.unlink()
             print(f"🗑️  Deleted: {path_plan_expected.name}")
@@ -61,40 +59,37 @@ def run_action(
             print(f"❌ Error deleting file: {e}")
             return False
 
-    # 3. Generation Process (Reached by Cases 1, 2, and 4)
-    
+    # 3. Generation Process
     try:
-        print(f"⚙️  Generating a download plan for {sat_id} (Day {day})...")
+        print(f"⚙️  Generating processing plan for Day {day}...")
         
-        dict_plan_download = generate_dict_plan_download(
+        # IMPORTANTE: generate_dict_plan_proc_single YA GUARDA el archivo internamente
+        # usando la ruta absoluta definida en el Step 01 (Self Info).
+        # Ponemos save_json=True para delegar el guardado al orquestador especializado.
+        dict_plan_proc = generate_dict_plan_proc_single(
             sat_id=sat_id, 
             product_id=product_id, 
             year=year, 
-            day=day
-        )
-        
-        # 4. Save to Disk
-        save_dict_plan_json(
-            dict_plan=dict_plan_download, 
-            path_json=str(path_plan_expected)
+            day=day,
+            fnp_tag=fnp_tag,
+            save_json=True 
         )
         
         # --- PHYSICAL DISK VERIFICATION ---
         if path_plan_expected.exists():
-            print(f"✅ SUCCESS: Download plan generated and verified on disk.")
+            print(f"✅ SUCCESS: Processing plan generated and verified on disk.")
             print("\n" + "=" * 80)
-            print(f" RESULT: {'✅ SUCCESS' if success else '❌ FAILED'} ".center(80))
+            print(f" RESULT: ✅ SUCCESS ".center(80))
             print("=" * 80 + "\n")
             return True
         else:
-            print(f"\n{'!'*80}")
-            print(f" 🔥 CATASTROPHIC ERROR: Write operation confirmed but file missing! ".center(80))
-            print(f" {path_plan_expected} ".center(80))
-            print(f"{'!'*80}\n")
+            print(f"❌ ERROR: Process finished but the file is missing from expected path.")
             return False
     
     except Exception as e:
         print(f"❌ FATAL ERROR during generation:\n💬 Detail: {e}\n")
+        import traceback
+        traceback.print_exc()
         return False
 
 # ===================================================================
@@ -103,11 +98,11 @@ def run_action(
 if __name__ == "__main__":
     params = {
         "sat_id": "19",
-        "product_id": "ABI-L2-MCMIPF",
+        "product_id": "ABI-L2-LSTF",
         "year": "2026",
         "day": "003",
+        "fnp_tag": "fnp01",
         "overwrite_json_plan": True 
     }
 
-    success = run_action(**params)
-
+    run_action(**params)

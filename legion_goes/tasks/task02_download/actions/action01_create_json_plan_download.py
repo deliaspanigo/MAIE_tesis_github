@@ -63,7 +63,7 @@ def run_action(
 
     # 3. Generation Process
     try:
-        print(f"⚙️  Generating a download plan for {sat_id} (Day {day})...")
+        print(f"⚙️  Generating a download plan for GOES-{sat_id} (Day {day})...")
         
         dict_plan_download = generate_dict_plan_download(
             sat_id=sat_id, 
@@ -102,7 +102,7 @@ def run_action(
 if __name__ == "__main__":
     params = {
         "sat_id": "19",
-        "product_id": "ABI-L2-MCMIPF",
+        "product_id": "ABI-L2-LSTF",
         "year": "2026",
         "day": "003",
         "overwrite_json_plan": True 

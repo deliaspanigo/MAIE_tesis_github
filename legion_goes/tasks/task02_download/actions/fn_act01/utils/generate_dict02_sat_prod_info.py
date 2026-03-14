@@ -19,28 +19,30 @@ def generate_dict(sat_id: str, product_id: str, year: str, day: str) -> dict:
     prod_SoT_info = get_SOT_goes_info_product(product_id = product_id)
   
     # Basics 01
-    bucket_name = sat_SoT_info['bucket']
-    selected_cadence = prod_SoT_info["cadence_full_disk"]
-    position = sat_SoT_info['position'].upper()
-  
+    str_SOT_bucket_name = sat_SoT_info['bucket']
+    str_SOT_selected_cadence = prod_SoT_info["cadence_full_disk"]
+    str_SOT_position = sat_SoT_info['position'].upper()
+    str_SOT_total_files_one_day = str(prod_SoT_info["total_files_one_day"])
+      
     # Basics 02
     date_julian = f"{year}{day.zfill(3)}"  # Día juliano como string (ej. "2026100")
     satellite_name = f"GOES-{sat_id}"
   
     # Basics 03
-    date_julian_obj = datetime.strptime(date_julian, "%Y%j")
-    date_gregorian = date_julian_obj.strftime("%Y-%m-%d")  # Fecha gregoriana formateada
+    date_julian_obj = datetime.strptime(date_julian, "%Y%j") # Ex: 2026-01-03
+    date_gregorian = date_julian_obj.strftime("%Y-%m-%d")    # Ex: 2026-01-03
   
     the_dict = {
         "satellite": satellite_name,
-        "position": position.upper(),
-        "bucket": bucket_name,
+        "position": str_SOT_position.upper(),
+        "bucket": str_SOT_bucket_name,
         "product_id": product_id,
-        "cadence": selected_cadence,
+        "cadence": str_SOT_selected_cadence,
+        "total_files_one_day": str_SOT_total_files_one_day,
         "year": year,
         "day": day,
-        "date_julian": date_julian,          # Día juliano como string (ej. "2026100")
-        "date_gregorian": date_gregorian     # Fecha gregoriana (ej. "2026-04-10")
+        "date_julian": date_julian,          # (ex. "2026100")
+        "date_gregorian": date_gregorian     # (ex. "2026-04-10")
     }
     return the_dict
 
@@ -55,19 +57,11 @@ if __name__ == "__main__":
     sat_id = "19"                  # GOES-19
     product_id = "ABI-L2-MCMIPF"   # Common product
     year = "2026"
-    day = "100"                    # Day 100 of the year
+    day = "003"                    # Day 100 of the year
 
     try:
         metadata = generate_dict(sat_id, product_id, year, day)
         
-        print(f"Satellite: {metadata['satellite']}")
-        print(f"Product: {metadata['product_id']}")
-        print(f"Position: {metadata['position']}")
-        print(f"Date (Julian): {metadata['date_julian']}")
-        print(f"Date (Gregorian): {metadata['date_gregorian']}")
-        print(f"Bucket: {metadata['bucket']}")
-        print(f"Cadence: {metadata['cadence']}")
-        print("\nFull metadata:")
         for key, value in metadata.items():
             print(f"   {key}: {value}")
         print("\nDone.")

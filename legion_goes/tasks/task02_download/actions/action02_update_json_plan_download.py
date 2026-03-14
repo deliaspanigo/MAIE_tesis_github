@@ -72,7 +72,7 @@ def run_action(
 # ===================================================================
 if __name__ == "__main__":
     test_sat_id = "19"
-    test_product_id = "ABI-L2-MCMIPF"
+    test_product_id = "ABI-L2-LSTF"
     test_year = "2026"
     test_day = "003"
 

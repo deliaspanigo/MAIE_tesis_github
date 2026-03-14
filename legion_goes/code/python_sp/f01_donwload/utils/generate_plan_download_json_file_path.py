@@ -30,7 +30,7 @@ def generate_plan_download_json_file_path(sat_id: str, product_id: str, year: st
     
     # 3. Build the organized directory structure
     # We group by product and then by year to avoid having thousands of files in one folder
-    full_path = Path(plans_root) / product_id / str(year) / file_name
+    full_path = Path(plans_root) / str(year) / str(day) /file_name
     
     return full_path
 

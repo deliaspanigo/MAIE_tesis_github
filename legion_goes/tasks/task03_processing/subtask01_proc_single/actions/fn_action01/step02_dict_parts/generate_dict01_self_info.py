@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # 1. Configuración de prueba
     params = {
         "sat_id": "19",
-        "product_id": "ABI-L2-MCMIPF",
+        "product_id": "ABI-L2-LSTF",
         "year": "2026",
         "day": "003",
         "fnp_tag": "fnp01"
@@ -49,12 +49,6 @@ if __name__ == "__main__":
         # 2. Generar el diccionario de información propia
         metadata = generate_dict(**params)
         
-        # 3. Print elegante
-        print(f"🛰️  Satellite : GOES-{params['sat_id']}")
-        print(f"📦 Product   : {params['product_id']}")
-        print(f"📅 Date      : {params['year']}-{params['day'].zfill(3)}")
-        print(f"🏷️  Tag       : {params['fnp_tag']}")
-        print("-" * 80)
         
         print("📝 Metadata generated:")
         for key, value in metadata.items():
